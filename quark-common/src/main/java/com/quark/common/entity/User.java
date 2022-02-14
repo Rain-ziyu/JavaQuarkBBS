@@ -2,6 +2,7 @@ package com.quark.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.quark.common.utils.Constants;
 
 import javax.persistence.*;

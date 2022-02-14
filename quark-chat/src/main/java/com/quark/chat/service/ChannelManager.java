@@ -101,6 +101,7 @@ public class ChannelManager {
                 for (Channel ch : keySet) {
                     ChatUser cUser = chatUserMap.get(ch);
                     if (cUser == null || !cUser.isAuth()) continue;
+//                    将消息发给对应的用户
                     ch.writeAndFlush(new TextWebSocketFrame(buildmessage));
                 }
             }finally {

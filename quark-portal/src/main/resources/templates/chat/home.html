@@ -56,7 +56,9 @@
         }
         if (window.WebSocket) {
             window.socket = new WebSocket(quark_chat_webSocket_api);
+            debugger
             window.socket.onmessage = function (event) {
+                debugger;
                 var data = eval("(" + event.data + ")");
                 console.log("onmessage data:" + JSON.stringify(data));
                 switch (data.type) {
@@ -95,6 +97,7 @@
             };
             /*WebSocket 关闭*/
             window.socket.onclose = function (event) {
+                debugger;
                 closeInvake(event);
             };
 

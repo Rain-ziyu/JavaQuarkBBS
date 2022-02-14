@@ -21,6 +21,7 @@ public interface AdminUserDao extends JpaRepository<AdminUser,Integer>,JpaSpecif
     @Override
     AdminUser getOne(Integer integer);
 
+    @Override
     @Cacheable
     List<AdminUser> findAll();
 

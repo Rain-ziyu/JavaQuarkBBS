@@ -4,7 +4,7 @@ package com.quark.chat.protocol;
 public class QuarkClientProtocol {
 
     /**
-     * Maginc
+     * Magic
      */
     private int MAGIC;
 

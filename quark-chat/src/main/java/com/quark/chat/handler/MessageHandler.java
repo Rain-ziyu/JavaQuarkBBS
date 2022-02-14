@@ -37,7 +37,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         ChatUser chatUser = manager.getChatUser(ctx.channel());
         if (chatUser!=null&&chatUser.isAuth()){
             QuarkClientProtocol clientProto = JSON.parseObject(frame.text(), new TypeReference<QuarkClientProtocol>(){});
-            //广播消息
+            //广播消息 会推送给所有在线的用户
             manager.broadMessage(QuarkChatProtocol.buildMessageCode(chatUser.getUser(),clientProto.getMsg()));
         }
     }
