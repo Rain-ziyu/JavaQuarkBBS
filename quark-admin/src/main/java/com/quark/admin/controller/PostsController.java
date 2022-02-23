@@ -1,5 +1,6 @@
 package com.quark.admin.controller;
 
+import com.quark.admin.service.NotificationService;
 import com.quark.admin.service.PostsService;
 import com.quark.admin.service.UserService;
 import com.quark.common.base.BaseController;
@@ -24,7 +25,8 @@ public class PostsController extends BaseController {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private NotificationService notificationService;
     @Autowired
     private PostsService postsService;
 
@@ -67,6 +69,7 @@ public class PostsController extends BaseController {
     @PostMapping("/delete")
     public QuarkResult deletePosts(@RequestParam(value = "id[]") Posts[] id){
         QuarkResult result = restProcessor(() -> {
+            notificationService.deleteByReply(id);
             postsService.deleteInBatch(Arrays.asList(id));
             return QuarkResult.ok();
         });

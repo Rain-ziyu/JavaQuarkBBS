@@ -1,12 +1,14 @@
 package com.quark.common.dao;
 
 import com.quark.common.entity.Notification;
+import com.quark.common.entity.Posts;
 import com.quark.common.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -24,5 +26,7 @@ public interface NotificationDao extends JpaRepository<Notification, Integer> {
     @Modifying
     @Query("update Notification n set n.isRead = true where n.touser = ?1")
     void updateByIsRead(User user);
-
+    @Modifying
+    @Transactional
+    void deleteByPosts(Posts posts);
 }

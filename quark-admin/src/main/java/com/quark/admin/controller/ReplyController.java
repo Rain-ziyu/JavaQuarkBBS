@@ -1,16 +1,19 @@
 package com.quark.admin.controller;
 
+import com.quark.admin.service.NotificationService;
 import com.quark.admin.service.ReplyService;
 import com.quark.admin.service.UserService;
 import com.quark.common.base.BaseController;
 import com.quark.common.dto.PageResult;
 import com.quark.common.dto.QuarkResult;
+import com.quark.common.entity.Notification;
 import com.quark.common.entity.Reply;
 import com.quark.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +31,8 @@ public class ReplyController extends BaseController {
 
     @Autowired
     private ReplyService replyService;
-
+    @Autowired
+    private NotificationService notificationService;
     @GetMapping
     public PageResult getAll(Reply reply, Integer uid, String draw,
                              @RequestParam(required = false, defaultValue = "1") int start,
