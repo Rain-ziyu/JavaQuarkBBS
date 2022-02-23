@@ -33,12 +33,12 @@ public class NotificationController extends BaseController {
 
     @ApiOperation("获取用户的通知消息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "uid",value = "用户的id",dataType ="int")
+            @ApiImplicitParam(name = "token",value = "用户的token",dataType ="string")
     })
-    @GetMapping("/{uid}")
-    public QuarkResult getAllNotification(@PathVariable("uid") Integer uid) {
+    @GetMapping("/{token}")
+    public QuarkResult getAllNotification(@PathVariable String token) {
         QuarkResult result = restProcessor(() -> {
-            User user = userService.findOne(uid);
+            User user = userService.getUserByToken(token);
             if (user==null) return QuarkResult.warn("用户不存在！");
             List<Notification> list = notificationService.findByUser(user);
             return QuarkResult.ok(list);
@@ -48,12 +48,12 @@ public class NotificationController extends BaseController {
 
     @ApiOperation("删除用户的通知消息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "uid",value = "用户的id",dataType ="int")
+            @ApiImplicitParam(name = "token",value = "用户的token",dataType ="string")
     })
-    @DeleteMapping("/{uid}")
-    public QuarkResult deleteAllNotification(@PathVariable("uid") Integer uid){
+    @DeleteMapping("/{token}")
+    public QuarkResult deleteAllNotification(@PathVariable String token){
         QuarkResult result = restProcessor(() -> {
-            User user = userService.findOne(uid);
+            User user = userService.getUserByToken(token);
             if (user == null) return QuarkResult.warn("用户不存在！");
             notificationService.deleteByUser(user);
             return QuarkResult.ok();

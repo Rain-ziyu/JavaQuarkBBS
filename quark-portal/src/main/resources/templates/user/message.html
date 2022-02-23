@@ -32,7 +32,7 @@
             </a>
         </li>
         <li class="layui-nav-item layui-this">
-            <a th:href="@{/user/setpsw}">
+            <a th:href="@{/user/message}">
                 <i class="layui-icon">&#xe611;</i>
                 我的消息
             </a>
@@ -66,18 +66,19 @@
 <script>
 
     //获取消息
-    var uid = $.getUrlParam('id');
-    if (uid == null) {
-        //如果链接地址没有id的话，就根据token去服务器获取
-        $.get(quark_getUser_api + getCookie(), function (data) {
-            uid = data.data.user.id;
-        })
-    }
+    // var uid = $.getUrlParam('id');
+    debugger;
+    // if (uid == null) {
+    //     //如果链接地址没有id的话，就根据token去服务器获取
+    //     $.get(quark_getUser_api + getCookie(), function (data) {
+    //         uid = data.data.user.id;
+    //     })
+    // }
 
     layui.use(['laytpl'], function () {
 
         var laytpl = layui.laytpl;
-        $.get(quark_notification_api + uid, function (data) {
+        $.get(quark_notification_api + getCookie(), function (data) {
             var message = $("#message").html();
             laytpl(message).render(data, function (html) {
                 $("#messages").html(html);
@@ -89,7 +90,7 @@
     //删除消息
     function deletemsg() {
         $.ajax({
-            url:quark_notification_api+uid,
+            url:quark_notification_api+getCookie(),
             type:'DELETE',
             success:function (data) {
                 location.reload();
