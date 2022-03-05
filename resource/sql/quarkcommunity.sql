@@ -12,6 +12,7 @@ File Encoding         : 65001
 
 Date: 2017-09-07 14:34:10
 */
+create database zutCommunity;
 
 SET FOREIGN_KEY_CHECKS=0;
 
