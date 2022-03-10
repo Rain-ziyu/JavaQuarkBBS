@@ -34,8 +34,10 @@
                             </cite>
                         </a>
                         <div class="detail-hits" data-id=" {{ d.data.posts.id}}">
-                            <span class="layui-btn layui-btn-mini jie-admin " type="collect" data-type="add">收藏</span>
-                            <!--<span class="layui-btn layui-btn-mini jie-admin  layui-btn-danger" type="collect" data-type="add">取消收藏</span>-->
+                            <span class="layui-btn layui-btn-mini jie-admin " type="collect" data-type="add" lay-submit
+                                  lay-filter="collect">收藏</span>
+                            <span class="layui-btn layui-btn-mini jie-admin  layui-btn-danger" type="collect"
+                                  data-type="add" lay-submit lay-filter="delCollect">取消收藏</span>
                         </div>
                     </div>
 
@@ -118,18 +120,13 @@
     layui.use(['laypage', 'laytpl'], function () {
         var laytpl = layui.laytpl,
             laypage = layui.laypage;
-
-
         loadRepaly(laytpl, laypage, 1, true);
-
-
     });
 
     layui.use(['form', 'layedit'], function () {
         var form = layui.form,
             layedit = layui.layedit,
             layer = layui.layer;
-
         layedit.set({
             uploadImage: {
                 url: quark_upload_api,
@@ -138,23 +135,24 @@
         });
 
         var content = layedit.build('L_content'); //建立编辑器
+        //提交回复点击事件
         form.on('submit(*)', function () {
             var layeditval = layedit.getContent(content);
-            if (layeditval ==""|| layeditval == undefined || layeditval == null){
-                layer.msg("输入的内容不能为空",{icon:7});
+            if (layeditval == "" || layeditval == undefined || layeditval == null) {
+                layer.msg("输入的内容不能为空", {icon: 7});
                 return false;
             }
             $.post(quark_reply_add_api, {
-                    content:layedit.getContent(content),
-                    postsId:id,
-                    token:getCookie()
+                    content: layedit.getContent(content),
+                    postsId: id,
+                    token: getCookie()
                 },
                 function (data) {
                     if (data.status == 200) {
                         layer.msg("回复成功", {
                             icon: 1,
                             time: 1000 //2秒关闭
-                        }, function(){
+                        }, function () {
                             location.reload();
                         });
                     } else if (data.status == 400) {
@@ -167,7 +165,67 @@
 
 
         });
+        //收藏按钮点击事件
+        form.on('submit(collect)', function () {
+            $.ajax({
+                type: 'PUT',
+                data: {
+                    id: id,
+                    token: getCookie()
+                },
+                url: quark_collect_add_api,
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    layer.msg("收藏成功", {
+                        icon: 1,
+                        time: 1000 //2秒关闭
+                    }, function () {
+                        location.reload();
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // if (data.status == 400) {
+                    //     layer.msg(data.error, {icon: 7});
+                    // } else {
+                    //     layer.msg(data.error, {icon: 5});
+                    // }
+                }
+            });
+
+        });
+        //取消收藏按钮点击事件
+        form.on('submit(delCollect)', function () {
+            $.ajax({
+                type: 'DELETE',
+                data: {
+                    id: id,
+                    token: getCookie()
+                },
+                url: quark_collect_del_api,
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    layer.msg("取消收藏成功", {
+                        icon: 1,
+                        time: 1000 //2秒关闭
+                    }, function () {
+                        location.reload();
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // if (data.status == 400) {
+                    //     layer.msg(data.error, {icon: 7});
+                    // } else {
+                    //     layer.msg(data.error, {icon: 5});
+                    // }
+                }
+            });
+
+        });
+
     });
+
     <!--根据id 翻页获取信息-->
     function loadRepaly(laytpl, laypage, pageNo, renderpager) {
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.quark.common.utils.Constants;
+import net.bytebuddy.build.ToStringPlugin;
 
 import javax.persistence.*;
 import java.io.Serializable;

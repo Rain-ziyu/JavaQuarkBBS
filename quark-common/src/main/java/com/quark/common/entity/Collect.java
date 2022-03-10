@@ -2,6 +2,7 @@ package com.quark.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.quark.common.utils.Constants;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "quark_collect")
+@ToString
 public class Collect implements Serializable{
 
     @Id
@@ -34,6 +36,7 @@ public class Collect implements Serializable{
     //收藏时间
     @JsonFormat(pattern = Constants.DATETIME_FORMAT)
     private Date initTime;
+
 
     public Integer getId() {
         return id;
