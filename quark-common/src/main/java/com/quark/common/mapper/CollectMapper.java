@@ -11,4 +11,5 @@ import java.util.List;
 public interface CollectMapper {
     List<Collect> getCollectListByUserId(User user);
     void deleteByUserIdAndPostId (@Param("postId") Integer postId,@Param("user") User user);
+    List<Collect> selectByUserIdAndPostId (@Param("postId")Integer postsId,@Param("userId")Integer userId);
 }

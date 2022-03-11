@@ -34,9 +34,9 @@
                             </cite>
                         </a>
                         <div class="detail-hits" data-id=" {{ d.data.posts.id}}">
-                            <span class="layui-btn layui-btn-mini jie-admin " type="collect" data-type="add" lay-submit
+                            <span class="layui-btn layui-btn-mini jie-admin add" type="collect" data-type="add" lay-submit
                                   lay-filter="collect">收藏</span>
-                            <span class="layui-btn layui-btn-mini jie-admin  layui-btn-danger" type="collect"
+                            <span class="layui-btn layui-btn-mini jie-admin  layui-btn-danger del" type="collect"
                                   data-type="add" lay-submit lay-filter="delCollect">取消收藏</span>
                         </div>
                     </div>
@@ -117,7 +117,14 @@
 
 
     var id = $.getUrlParam('id');
+
+
     layui.use(['laypage', 'laytpl'], function () {
+        var laytpl = layui.laytpl,
+            laypage = layui.laypage;
+        loadRepaly(laytpl, laypage, 1, true);
+    });
+    layui.use(['layui-btn'], function () {
         var laytpl = layui.laytpl,
             laypage = layui.laypage;
         loadRepaly(laytpl, laypage, 1, true);
@@ -133,7 +140,7 @@
                 type: 'post' //默认post
             }
         });
-
+        debugger
         var content = layedit.build('L_content'); //建立编辑器
         //提交回复点击事件
         form.on('submit(*)', function () {
@@ -194,7 +201,8 @@
                     // }
                 }
             });
-
+            $(".add").hide();
+            $(".del").show();
         });
         //取消收藏按钮点击事件
         form.on('submit(delCollect)', function () {
@@ -224,14 +232,13 @@
                     // }
                 }
             });
-
+            $(".del").hide();
+            $(".add").show();
         });
 
     });
-
     <!--根据id 翻页获取信息-->
     function loadRepaly(laytpl, laypage, pageNo, renderpager) {
-
         $.get(quark_posts_detail_api + id, {
             pageNo: pageNo,
             length: 10
@@ -255,7 +262,37 @@
                     }
                 }
             });
+            get();
         });
+    }
+  function get () {
+        var buttonStatus ;
+        //判断该帖子是否已被收藏
+        $.ajax({
+            type: 'GET',
+            url: quark_collect_judge_api+"?postId="+id+"&token=" +getCookie(),
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            async : false,
+            success: function (data, textStatus, jqXHR) {
+                buttonStatus=data.data;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                // if (data.status == 400) {
+                //     layer.msg(data.error, {icon: 7});
+                // } else {
+                //     layer.msg(data.error, {icon: 5});
+                // }
+            }
+        });
+        if(buttonStatus){
+            debugger;
+            $(".add").hide();
+            $(".del").show();
+        }else {
+            $(".del").hide();
+            $(".add").show();
+        }
     }
 
 

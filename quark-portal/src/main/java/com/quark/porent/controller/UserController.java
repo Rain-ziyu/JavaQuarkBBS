@@ -43,5 +43,7 @@ public class UserController {
 
     @RequestMapping("/message")
     public String message() { return "user/message"; }
+    @RequestMapping("/collect")
+    public String collect() { return "user/collect"; }
 
 }

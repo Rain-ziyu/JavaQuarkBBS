@@ -18,4 +18,5 @@ public interface CollectService extends BaseService<Collect> {
     List<Collect> findByUser(User user);
 
     void deleteByUserIdAndPostId(Integer postId,User user);
+    boolean judgeCollect (Integer postId , Integer userId);
 }

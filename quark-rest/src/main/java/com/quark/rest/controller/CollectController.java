@@ -56,5 +56,14 @@ public class CollectController extends BaseController {
         });
         return result;
     }
+    @ApiOperation("获取用户的是否以对该帖子收藏")
+    @GetMapping("/judge")
+    public QuarkResult judgeCollect( String token,Integer postId){
+        QuarkResult result = restProcessor(() -> {
+            User user = userService.getUserByToken(token);
+            return QuarkResult.ok(collectService.judgeCollect(postId,user.getId()));
+        });
+        return result;
+    }
 
 }

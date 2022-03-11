@@ -26,5 +26,10 @@
         from quark_collect a,quark_posts b
         where a.user_id = #{id} and a.posts_id = b.id
     </select>
+    <select id="selectByUserIdAndPostId" resultMap="BaseResultMap">
+        select a.id,a.posts_id,a.user_id,a.init_time
+        from quark_collect a
+        where a.user_id = #{userId} and a.posts_id = #{postId}
+    </select>
 
 </mapper>

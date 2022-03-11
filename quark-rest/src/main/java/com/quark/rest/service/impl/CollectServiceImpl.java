@@ -54,4 +54,15 @@ public class CollectServiceImpl extends BaseServiceImpl<CollectDao, Collect> imp
     public void deleteByUserIdAndPostId(Integer postId ,User user) {
         collectMapper.deleteByUserIdAndPostId(postId,user);
     }
+
+    @Override
+    public boolean judgeCollect(Integer postId, Integer userId) {
+        List<Collect> collects = collectMapper.selectByUserIdAndPostId(postId, userId);
+        if(collects.size()==0){
+        return false;
+        }
+        else {
+            return true;
+        }
+    }
 }
