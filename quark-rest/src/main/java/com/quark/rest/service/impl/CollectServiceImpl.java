@@ -51,7 +51,7 @@ public class CollectServiceImpl extends BaseServiceImpl<CollectDao, Collect> imp
     }
 
     @Override
-    public void deleteByUserIdAndPostId(String postId ,User user) {
+    public void deleteByUserIdAndPostId(Integer postId ,User user) {
         collectMapper.deleteByUserIdAndPostId(postId,user);
     }
 }

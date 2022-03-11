@@ -167,12 +167,14 @@
         });
         //收藏按钮点击事件
         form.on('submit(collect)', function () {
+           var param = {
+                posts: {id: id},
+                token: getCookie()
+            }
+            debugger
             $.ajax({
                 type: 'PUT',
-                data: {
-                    id: id,
-                    token: getCookie()
-                },
+                data: JSON.stringify(param) ,
                 url: quark_collect_add_api,
                 contentType: 'application/json;charset=UTF-8',
                 dataType: 'json',
@@ -196,12 +198,13 @@
         });
         //取消收藏按钮点击事件
         form.on('submit(delCollect)', function () {
+            var param = {
+                posts: {id: id},
+                token: getCookie()
+            }
             $.ajax({
                 type: 'DELETE',
-                data: {
-                    id: id,
-                    token: getCookie()
-                },
+                data: JSON.stringify(param),
                 url: quark_collect_del_api,
                 contentType: 'application/json;charset=UTF-8',
                 dataType: 'json',

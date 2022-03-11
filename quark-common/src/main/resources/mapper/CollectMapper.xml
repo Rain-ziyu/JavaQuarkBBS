@@ -18,7 +18,7 @@
         </association>
     </resultMap>
     <delete id="deleteByUserIdAndPostId">
-        delete  from quark_collect where posts_id = #{postId} and user_id = #{id}
+        delete  from quark_collect where posts_id = #{postId} and user_id = #{user.id}
     </delete>
 
     <select id="getCollectListByUserId" resultMap="BaseResultMap">

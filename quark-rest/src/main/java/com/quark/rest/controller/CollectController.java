@@ -6,6 +6,7 @@ import com.quark.common.entity.Collect;
 import com.quark.common.entity.Label;
 import com.quark.common.entity.Posts;
 import com.quark.common.entity.User;
+import com.quark.rest.param.CollectParam;
 import com.quark.rest.service.CollectService;
 import com.quark.rest.service.UserService;
 import io.swagger.annotations.Api;
@@ -27,13 +28,12 @@ public class CollectController extends BaseController {
     UserService userService;
     @ApiOperation("添加收藏")
     @PutMapping
-    public QuarkResult addCollect(String token, Posts posts){
+    public QuarkResult addCollect(@RequestBody  CollectParam collectParam){
         QuarkResult result = restProcessor(() -> {
-            User user = userService.getUserByToken(token);
-            collectService.saveCollect(user,posts);
+            User user = userService.getUserByToken(collectParam.getToken());
+            collectService.saveCollect(user,collectParam.getPosts());
             return QuarkResult.ok();
         });
-
         return result;
     }
     @ApiOperation("获取用户的帖子收藏")
@@ -48,10 +48,10 @@ public class CollectController extends BaseController {
     }
     @ApiOperation("取消收藏")
     @DeleteMapping
-    public QuarkResult delCollect(String postId,String token){
+    public QuarkResult delCollect(@RequestBody  CollectParam collectParam){
         QuarkResult result = restProcessor(() -> {
-            User user = userService.getUserByToken(token);
-            collectService.deleteByUserIdAndPostId(postId,user);
+            User user = userService.getUserByToken(collectParam.getToken());
+            collectService.deleteByUserIdAndPostId(collectParam.getPosts().getId(),user);
             return QuarkResult.ok();
         });
         return result;
