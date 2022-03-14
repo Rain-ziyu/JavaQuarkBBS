@@ -3,11 +3,11 @@
 <mapper namespace="com.quark.common.mapper.CollectMapper">
     <resultMap id="BaseResultMap" type="com.quark.common.entity.Collect">
         <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="initTime" jdbcType="DATE" property="initTime"/>
+        <result column="inittime" jdbcType="DATE" property="initTime"/>
         <association property="posts" javaType="com.quark.common.entity.Posts">
             <id property="id" column="id"/>
             <result column="title" jdbcType="VARCHAR" property="title"/>
-            <result column="initTime" jdbcType="VARCHAR" property="initTime"/>
+            <result column="init_time" jdbcType="DATE" property="initTime"/>
             <result column="content" jdbcType="VARCHAR" property="content"/>
             <association property="label" javaType="com.quark.common.entity.Label">
                 <id property="id" column="id"/>
@@ -22,12 +22,12 @@
     </delete>
 
     <select id="getCollectListByUserId" resultMap="BaseResultMap">
-        select a.id,a.posts_id,a.user_id,a.init_time,b.*
+        select a.id,a.posts_id,a.user_id,a.init_time as `inittime`,b.*
         from quark_collect a,quark_posts b
         where a.user_id = #{id} and a.posts_id = b.id
     </select>
     <select id="selectByUserIdAndPostId" resultMap="BaseResultMap">
-        select a.id,a.posts_id,a.user_id,a.init_time
+        select a.id,a.posts_id,a.user_id,a.init_time as `inittime`
         from quark_collect a
         where a.user_id = #{userId} and a.posts_id = #{postId}
     </select>
