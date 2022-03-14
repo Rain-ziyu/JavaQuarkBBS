@@ -60,6 +60,11 @@ public class PageController {
         }
     }
 
+    @RequestMapping(value="/" ,method = RequestMethod.GET)
+    public String login1(){
+        System.out.println("-------------------");
+        return "login";
+    }
     @RequestMapping("/initPage")
     public String InitPage(){
         return "init";
