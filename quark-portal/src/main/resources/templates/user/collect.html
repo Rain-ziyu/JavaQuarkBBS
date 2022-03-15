@@ -7,12 +7,17 @@
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <script th:src="@{/layui/layui.js}" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 <body>
 
 <div th:include="common/header::header"></div>
 
-<div class="main fly-user-main layui-clear">
+<div class="main fly-user-main layui-clear" id="app">
     <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
         <li class="layui-nav-item ">
             <a th:href="@{/user/set}">
@@ -41,94 +46,89 @@
     </ul>
     <div class="fly-panel fly-panel-user" pad20>
         <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
-            <button class="layui-btn layui-btn-danger" onclick="deleteCollect()" id="LAY_delCollect">取消收藏</button>
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
                 <legend>收藏夹内容</legend>
             </fieldset>
-            <script type="text/html" id="collect">
-                <div id="LAY_minemsg" style="margin-top: 10px;">
-                    <ul class="mine-msg">
-                        {{# layui.each(d.data, function(index, item){ }}
-                        <li>
-                            <div class="layui-collapse" lay-filter="test"  lay-accordion>
-                                <div class="layui-colla-item">
-                                    <h2 class="layui-colla-title">{{item.posts.title}}
-                                    <button ></button>
-                                    </h2>
-                                    <div class="layui-colla-content">
-                                        <p>{{item.posts.content}}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        {{# }); }}
-                    </ul>
-                </div>
-            </script>
-            <div id="collects"></div>
+
+<!--          使用vue进行循环-->
+            <li v-for="info in showInfo">
+                <el-collapse  accordion  :title="''">
+                    <el-collapse-item  >
+<!--                        使用template动态的绑定title-->
+                        <template slot="title">
+                            {{info.posts.title}} <i class="header-icon el-icon-info"></i>
+                        </template>
+                        <button class="layui-btn layui-btn-danger"  @click="delCollect(info)" id="LAY_delCollect">取消收藏</button>
+                        <div class="box" v-html="info.posts.content"></div>
+                    </el-collapse-item>
+                </el-collapse>
+            </li>
         </div>
     </div>
 
 </div>
 <div th:include="common/footer::footer"></div>
 <script>
-<!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
-    layui.use('element', function () {
-        debugger
-        var element = layui.element;
-        //监听折叠
-        element.on('collapse(test)', function (data) {
-            layer.msg('展开状态：' + data.show);
-            layui.element.render('collapse');
-        });
-    });
-
-    //获取消息
-    // var uid = $.getUrlParam('id');
-    debugger;
-    // if (uid == null) {
-    //     //如果链接地址没有id的话，就根据token去服务器获取
-    //     $.get(quark_getUser_api + getCookie(), function (data) {
-    //         uid = data.data.user.id;
-    //     })
-    // }
-
-    layui.use(['laytpl'], function () {
-
-        var laytpl = layui.laytpl;
-        $.get(quark_collect_all_api + "?&token="+getCookie(), function (data) {
-            var collect = $("#collect").html();
-            laytpl(collect).render(data, function (html) {
-                $("#collects").html(html);
-            })
+    function f(str) {
+        var arrEntities = {
+            'lt': '<',
+            'gt': '>',
+            'nbsp': ' ',
+            'amp': '&',
+            'quot': '"'
+        };
+        return str.toString().replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all, t) {
+            return arrEntities[t];
         })
-
-    })
-
-    //删除消息
-    function deleteCollect(id) {
-        var param = {
-            posts: {id: id},
-            token: getCookie()
-        }
-        $.ajax({
-            type: 'DELETE',
-            data: JSON.stringify(param),
-            url: quark_collect_del_api,
-            contentType: 'application/json;charset=UTF-8',
-            dataType: 'json',
-            success: function (data, textStatus, jqXHR) {
-                layer.msg("取消收藏成功", {
-                    icon: 1,
-                    time: 1000 //2秒关闭
-                }, function () {
-                    location.reload();
-                });
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            }
-        });
     }
+    var app = new Vue({
+        el: '#app',
+        computed:{
+            showInfo:{
+                get(){
+                    let info;
+                    $.ajaxSettings.async = false;
+                    $.get(quark_collect_all_api + "?&token=" + getCookie(), function (data) {
+                        debugger
+                        info = data.data;
+                    })
+                    for (let i = 0; i < info.length; i++) {
+                        info[i].posts.content =  f(info[i].posts.content)
+                    }
+                    return info
+                },
+            },
+        },
+        methods:{
+            delCollect(info){
+                debugger
+                var param = {
+                    posts: {id: info.posts.id},
+                    token: getCookie()
+                }
+                $.ajax({
+                    type: 'DELETE',
+                    data: JSON.stringify(param),
+                    url: quark_collect_del_api,
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                        layer.msg("取消收藏成功", {
+                            icon: 1,
+                            time: 1000 //2秒关闭
+                        }, function () {
+                            location.reload();
+                        });
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    }
+                });
+            }
+        },
+        data: {
+            message: 'Hello Vue!'
+        }
+    })
 </script>
 
 </body>
