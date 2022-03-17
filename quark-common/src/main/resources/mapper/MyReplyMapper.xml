@@ -18,11 +18,11 @@
         <result property="initTime"  column="init_time"/>
         <association property="hfuser" javaType="com.quark.common.entity.User" >
             <id property="id" column="hfuser_id"/>
-            <result property="username" column="username"/>
+            <result property="username" column="hfusername"/>
         </association>
         <association property="bhfuser" javaType="com.quark.common.entity.User" >
             <id property="id" column="bhfuser_id"/>
-            <result property="username" column="username"/>
+            <result property="username" column="bhfusername"/>
         </association>
     </resultMap>
     <select id="listMyReply" resultMap="reply">
@@ -36,7 +36,18 @@
         </if>
     </select>
     <select id="selectRereply" resultMap="Rereply">
-        select r.*,u.username from my_reply r,quark_user u where r.reply_id=#{id} and (u.id=r.hfuser_id or u.id=r.bhfuser_id)
+        select
+            r.*,
+            u1.username hfusername,
+            u2.username bhfusername
+        from
+            my_reply r,
+            quark_user u1,
+            quark_user u2
+        where
+            r.reply_id=#{id}
+          and u1.id=r.hfuser_id
+          and u2.id=r.bhfuser_id
     </select>
 
 </mapper>

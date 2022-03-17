@@ -66,23 +66,42 @@
                             </div>
                             <div class="detail-body jieda-body">
                                 <p>{{item.content}}</p>
+                                {{# layui.each(item.myReplies, function(index, item1){ }}
+                                <div class="layui-col-md1">
+                                    &nbsp;
+                                </div>
+                                <div class="layui-col-md11">
+                                    <div>
+                                    <a  href="../user/home?id={{item1.hfuser.id}}">
+                                        <cite><i>{{item1.hfuser.username}}</i></cite>
+                                    </a>
+                                    回复：
+                                    <a  href="../user/home?id={{item1.bhfuser.id}}">
+                                        <cite><i>{{item1.bhfuser.username}}</i></cite>
+                                    </a>
+                                        <span style="margin-top: 0;margin-right: 1px;color: #999999; font-size: 12px">{{item1.initTime}}</span>
+                                    </div>
+                                    <div class="jieda-reply">
+                                        {{item1.content}}
+                                        <span type="reply" style="float:right" onclick="Reply('{{item1.id}}','{{item1.hfuser.id}}');"><i class="iconfont icon-svgmoban53"></i>回复</span>
+                                        <span class="jieda-zan" type="zan" style="float:right" ><i class="iconfont icon-zan"></i><em>{{item.up}}</em></span>
+                                        <div id="{{item1.id}}"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                {{# }); }}
                             </div>
                             <div class="jieda-reply">
                                 <span class="jieda-zan" type="zan"><i class="iconfont icon-zan"></i><em>{{item.up}}</em></span>
                                 <span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
                             </div>
-
                         </li>
-
                         {{# }); }} {{# if(d.total === 0){ }}
                         <li class="fly-none">没有任何回答</li>
                         {{# } }}
                         <!--  -->
                     </ul>
-
-
                 </div>
-
             </script>
 
             <div id="postss"></div>
@@ -113,11 +132,19 @@
 <!--<script th:src="@{/js/jquery-1.11.2.min.js}"></script>-->
 <!--<script th:src="@{/js/jquery.cookie.js}"></script>-->
 <!--<script th:src="@{/js/quark_api.js}"></script>-->
-<script>
+<script type="text/javascript">
 
+    function Reply(id,uid){
+        var html="<div class='reply_textarea'>"+
+            "<textarea name='' rows='5' style='width:100%;overflow:auto;word-break:break-all;'>"+
+            "</textarea><br/>"+
+            "<input type='submit' value='发表' />"+
+            "</div>";
+        $(".reply_textarea").remove();
+        $("#"+id).append(html);
+    }
 
     var id = $.getUrlParam('id');
-
 
     layui.use(['laypage', 'laytpl'], function () {
         var laytpl = layui.laytpl,
@@ -140,7 +167,6 @@
                 type: 'post' //默认post
             }
         });
-        debugger
         var content = layedit.build('L_content'); //建立编辑器
         //提交回复点击事件
         form.on('submit(*)', function () {

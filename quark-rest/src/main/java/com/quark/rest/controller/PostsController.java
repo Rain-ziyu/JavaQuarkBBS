@@ -1,11 +1,10 @@
 package com.quark.rest.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.quark.common.base.BaseController;
 import com.quark.common.dto.QuarkResult;
-import com.quark.common.entity.Label;
-import com.quark.common.entity.Posts;
-import com.quark.common.entity.Reply;
-import com.quark.common.entity.User;
+import com.quark.common.entity.*;
 import com.quark.rest.service.LabelService;
 import com.quark.rest.service.PostsService;
 import com.quark.rest.service.ReplyService;
@@ -110,11 +109,16 @@ public class PostsController extends BaseController {
             Posts posts = postsService.findOne(postsid);
             if (posts == null) return QuarkResult.error("帖子不存在");
             map.put("posts", posts);
-
-            Page<Reply> page = replyService.getReplyByPage(postsid, pageNo - 1, length);
-            map.put("replys", page.getContent());
-
-            return QuarkResult.ok(map, page.getTotalElements(), page.getNumberOfElements());
+            com.baomidou.mybatisplus.extension.plugins.pagination.Page<MyReply> page=new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageNo,length);
+            QueryWrapper<MyReply> wrapper=new QueryWrapper<MyReply>();
+            //Page<Reply> page = replyService.getReplyByPage(postsid, pageNo - 1, length);
+            IPage<MyReply> myReplyIPage =replyService.listMyReply(page,wrapper,postsid);
+            for (MyReply record : myReplyIPage.getRecords()) {
+                System.out.println(record.toString());
+            }
+            map.put("replys", myReplyIPage.getRecords());
+            //return QuarkResult.ok(map, page.getTotalElements(), page.getNumberOfElements());
+            return QuarkResult.ok(map, page.getTotal(), (int)page.getPages());
         });
         return result;
 

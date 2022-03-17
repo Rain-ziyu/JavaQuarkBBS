@@ -2,6 +2,7 @@ package com.quark.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.quark.common.utils.Constants;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class MyReply implements Serializable {
 
     private String content;
 
+    @JsonFormat(pattern = Constants.DATETIME_FORMAT, timezone = "GMT+8")
     private Date initTime;
 
 
@@ -95,7 +97,7 @@ public class MyReply implements Serializable {
                 ", up=" + up +
                 ", posts=" + posts +
                 ", user=" + user +
-                ", myRereplies=" + myReplies +
+                ", myReplies=" + myReplies +
                 '}';
     }
 }

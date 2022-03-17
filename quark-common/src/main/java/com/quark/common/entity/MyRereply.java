@@ -1,6 +1,9 @@
 package com.quark.common.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.quark.common.utils.Constants;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,6 +13,7 @@ public class MyRereply implements Serializable {
 
     private String content;
 
+    @JsonFormat(pattern = Constants.DATETIME_FORMAT, timezone = "GMT+8")
     private Date initTime;
 
     //点赞个数

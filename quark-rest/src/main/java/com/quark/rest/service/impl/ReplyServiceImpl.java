@@ -1,13 +1,13 @@
 package com.quark.rest.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.quark.common.base.BaseServiceImpl;
 import com.quark.common.dao.PostsDao;
 import com.quark.common.dao.ReplyDao;
-import com.quark.common.entity.Notification;
-import com.quark.common.entity.Posts;
-import com.quark.common.entity.Reply;
-import com.quark.common.entity.User;
+import com.quark.common.entity.*;
 import com.quark.common.exception.ServiceProcessException;
+import com.quark.common.mapper.MyReplyMapper;
 import com.quark.rest.service.NotificationService;
 import com.quark.rest.service.ReplyService;
 import com.quark.rest.service.WebSocketService;
@@ -33,6 +33,9 @@ public class ReplyServiceImpl extends BaseServiceImpl<ReplyDao, Reply> implement
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private MyReplyMapper myReplyMapper;
 
     @Autowired
     private WebSocketService webSocketService;
@@ -93,5 +96,11 @@ public class ReplyServiceImpl extends BaseServiceImpl<ReplyDao, Reply> implement
             // 所有编译期异常转换为运行期异常
             throw new ServiceProcessException("发布回复失败!");
         }
+    }
+    @Override
+    public IPage<MyReply> listMyReply(com.baomidou.mybatisplus.extension.plugins.pagination.Page<MyReply> page, QueryWrapper<MyReply> wrapper, Integer postid) {
+        wrapper.eq("posts_id",postid);
+        IPage<MyReply> myReplyIPage = myReplyMapper.listMyReply(page, wrapper);
+        return myReplyIPage;
     }
 }
