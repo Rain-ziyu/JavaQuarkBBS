@@ -30,7 +30,7 @@
                 <textarea id="message" name="message" class="write_area" placeholder="说点啥吧..."></textarea>
                 <div class="facebox fn-clear">
                     <div class="expression"></div>
-                    <div class="chat_type" id="chat_type">群聊</div>
+                    <div class="chat_type" id="chat_type">私聊</div>
                     <button name="" class="sub_but">提 交</button>
                 </div>
             </div>
@@ -49,6 +49,27 @@
     var messagetype = 0x05;
     var socket = null;
     var isAuth = false;
+    //连接服务器webSocket操作
+    function connectWebSocket(id) {
+        var socket = new SockJS(quark_webSocket_api, undefined, {protocols_whitelist: ['websocket']});
+        var stompClient  = Stomp.over(socket);
+
+        //接收到广播推送
+        stompClient.connect({},function (frame) {
+            stompClient.subscribe('/topic/all', function(message){
+            });
+
+            //接收到一对一推送
+            stompClient.subscribe('/user/' + id + '/message', function(message){
+                if($('.nav-message').length>0) {
+                    $('.nav-message').html(JSON.parse(message.body).notice);
+                }else{
+                    $(".nav-user").prepend("<a class='nav-message' href='../user/message'>"+JSON.parse(message.body).notice+"</a>");
+                }
+            });
+
+        })
+    }
     //用户登录
     function userLogin() {
         if (!window.WebSocket) {

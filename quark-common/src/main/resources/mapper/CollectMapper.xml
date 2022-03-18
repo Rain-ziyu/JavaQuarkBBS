@@ -5,16 +5,16 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="inittime" jdbcType="DATE" property="initTime"/>
         <association property="posts" javaType="com.quark.common.entity.Posts">
-            <id property="id" column="id"/>
+            <id property="id" column="posts_id"/>
             <result column="title" jdbcType="VARCHAR" property="title"/>
             <result column="init_time" jdbcType="DATE" property="initTime"/>
             <result column="content" jdbcType="VARCHAR" property="content"/>
             <association property="label" javaType="com.quark.common.entity.Label">
-                <id property="id" column="id"/>
+                <id property="id" column="label_id"/>
             </association>
         </association>
         <association property="user" javaType="com.quark.common.entity.User">
-            <id property="id" column="id"/>
+            <id property="id" column="user_id"/>
         </association>
     </resultMap>
     <delete id="deleteByUserIdAndPostId">

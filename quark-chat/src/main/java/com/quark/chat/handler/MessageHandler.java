@@ -3,8 +3,11 @@ package com.quark.chat.handler;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.quark.chat.entity.ChatUser;
+import com.quark.chat.message.ChatRequestMessage;
 import com.quark.chat.protocol.QuarkChatProtocol;
+import com.quark.chat.protocol.QuarkChatType;
 import com.quark.chat.protocol.QuarkClientProtocol;
+import com.quark.chat.protocol.Serializer;
 import com.quark.chat.service.ChannelManager;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,11 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+
+import static com.quark.chat.protocol.QuarkChatType.User_MESSAGE_REQUEST_CODE;
+
 /**
- * @Author : ChinaLHR
- * @Date : Create in 14:48 2017/10/24
- * @Email : 13435500980@163.com
- *
  * 消息处理Handler
  */
 @ChannelHandler.Sharable
@@ -37,8 +40,16 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
         ChatUser chatUser = manager.getChatUser(ctx.channel());
         if (chatUser!=null&&chatUser.isAuth()){
             QuarkClientProtocol clientProto = JSON.parseObject(frame.text(), new TypeReference<QuarkClientProtocol>(){});
-            //广播消息 会推送给所有在线的用户
-            manager.broadMessage(QuarkChatProtocol.buildMessageCode(chatUser.getUser(),clientProto.getMsg()));
+            //            因为是websocket服务需要在这里就行不同消息的处理
+            byte type = clientProto.getType();
+            if(type==User_MESSAGE_REQUEST_CODE) {
+                Serializer.Algorithm serializer = Serializer.Algorithm.values()[1];
+                ChatRequestMessage chatRequestMessage = (ChatRequestMessage) serializer.deserialize(QuarkChatType.getMessageClass(type), clientProto.getMsg().getBytes(StandardCharsets.UTF_8));
+                manager.unicastMessage(chatRequestMessage.getTo(),QuarkChatProtocol.buildMessageCode(chatUser.getUser(),chatRequestMessage));
+            }else {
+                //广播消息 会推送给所有在线的用户
+                manager.broadMessage(QuarkChatProtocol.buildMessageCode(chatUser.getUser(), clientProto.getMsg()));
+            }
         }
     }
 

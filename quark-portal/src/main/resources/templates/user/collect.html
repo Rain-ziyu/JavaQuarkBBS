@@ -12,38 +12,15 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 引入组件库 -->
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<style>
+   .button { position: absolute;left: 950px;}
+</style>
 </head>
 <body>
 
 <div th:include="common/header::header"></div>
-
 <div class="main fly-user-main layui-clear" id="app">
-    <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
-        <li class="layui-nav-item ">
-            <a th:href="@{/user/set}">
-                <i class="layui-icon">&#xe620;</i>
-                基本设置
-            </a>
-        </li>
-        <li class="layui-nav-item ">
-            <a th:href="@{/user/seticon}">
-                <i class="layui-icon">&#xe620;</i>
-                头像设置
-            </a>
-        </li>
-        <li class="layui-nav-item">
-            <a th:href="@{/user/setpsw}">
-                <i class="layui-icon">&#xe620;</i>
-                密码设置
-            </a>
-        </li>
-        <li class="layui-nav-item layui-this">
-            <a th:href="@{/user/message}">
-                <i class="layui-icon">&#xe611;</i>
-                我的消息
-            </a>
-        </li>
-    </ul>
+    <ul th:include="common/set::set" class="layui-nav layui-nav-tree layui-inline" lay-filter="user"></ul>
     <div class="fly-panel fly-panel-user" pad20>
         <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
@@ -56,10 +33,14 @@
                     <el-collapse-item  >
 <!--                        使用template动态的绑定title-->
                         <template slot="title">
-                            {{info.posts.title}} <i class="header-icon el-icon-info"></i>
+                            {{info.posts.title}} <i class="header-icon el-icon-info"  ></i>
+                            <el-button type="danger" @click="delCollect(info)" plain class="button" >取消收藏</el-button>
+
                         </template>
-                        <button class="layui-btn layui-btn-danger"  @click="delCollect(info)" id="LAY_delCollect">取消收藏</button>
-                        <div class="box" v-html="info.posts.content"></div>
+                        <div class="box" v-html="info.posts.content">
+
+                        </div>
+
                     </el-collapse-item>
                 </el-collapse>
             </li>
@@ -120,14 +101,9 @@
                             location.reload();
                         });
                     },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    }
                 });
             }
         },
-        data: {
-            message: 'Hello Vue!'
-        }
     })
 </script>
 

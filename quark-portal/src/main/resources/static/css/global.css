@@ -289,10 +289,10 @@ body .fly-user-main{position: relative; width: 1085px; min-height: 600px; margin
 .detail-about .jie-user cite{top: -3px; left: 56px; width: 260px; color: #4f99cf; font-size: 14px;}
 .detail-about .jie-user cite em{padding-left:5px; color:#999; cursor:default; font-size:12px; font-style: normal;}
 .detail-about .jie-user img{position: relative; display: block; margin: 0; top: 0; border-radius: 2px;}
-.detail-hits{position:absolute; left: 71px; bottom: 15px; font-size: 0;}
+.detail-hits{position:absolute; left: 71px; bottom: 6px; font-size: 0;}
 .detail-hits span{margin-top: 0; font-size: 12px;}
 .detail-hits .layui-btn{border-radius: 0;}
-.detail-hits .layui-btn+.layui-btn{margin-left: 5px;}
+.detail-hits .layui-btn+.layui-btn{margin-left: 0px;}
 .detail-hits .jie-admin{margin-right: 1px;}
 .detail-body{margin: 20px 0 50px; min-height: 202px; line-height:26px; font-size:16px; word-wrap: break-word;}
 .detail-body p{margin-bottom:15px;}

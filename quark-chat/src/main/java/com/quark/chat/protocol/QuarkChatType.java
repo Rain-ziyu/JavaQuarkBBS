@@ -1,5 +1,10 @@
 package com.quark.chat.protocol;
 
+import com.quark.chat.message.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Author : ChinaLHR
  * @Date : Create in 16:37 2017/10/23
@@ -18,4 +23,14 @@ public class QuarkChatType {
     public static final byte SYS_USERSINFO_CODE = 0x07;//在线人数消息
     public static final byte SYS_MESSAGE_CODE = 0x08;//系统消息
     public static final byte SYS_ERRORMESSAGE_CODE = 0x09;//系统错误消息
-}
+    public static final byte User_MESSAGE_REQUEST_CODE = 0x10;//用户私聊消息(server)
+    public static final byte User_MESSAGE_RESPONSE_CODE = 0x11;//用户私聊消息(client)
+    private static final Map<Byte, Class<?>> messageClasses = new HashMap<>();
+    static {
+        messageClasses.put(User_MESSAGE_REQUEST_CODE, ChatRequestMessage.class);
+    }
+
+    public static Class<?> getMessageClass(int messageType) {
+        return messageClasses.getOrDefault(messageType,String.class);
+    }
+    }

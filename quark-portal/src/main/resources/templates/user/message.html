@@ -12,32 +12,7 @@
 <div th:include="common/header::header"></div>
 
 <div class="main fly-user-main layui-clear">
-    <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
-        <li class="layui-nav-item ">
-            <a th:href="@{/user/set}">
-                <i class="layui-icon">&#xe620;</i>
-                基本设置
-            </a>
-        </li>
-        <li class="layui-nav-item ">
-            <a th:href="@{/user/seticon}">
-                <i class="layui-icon">&#xe620;</i>
-                头像设置
-            </a>
-        </li>
-        <li class="layui-nav-item">
-            <a th:href="@{/user/setpsw}">
-                <i class="layui-icon">&#xe620;</i>
-                密码设置
-            </a>
-        </li>
-        <li class="layui-nav-item layui-this">
-            <a th:href="@{/user/message}">
-                <i class="layui-icon">&#xe611;</i>
-                我的消息
-            </a>
-        </li>
-    </ul>
+    <ul th:include="common/set::set" class="layui-nav layui-nav-tree layui-inline" lay-filter="user"></ul>
     <div class="fly-panel fly-panel-user" pad20>
         <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
             <button class="layui-btn layui-btn-danger" onclick="deletemsg()" id="LAY_delallmsg">清空全部消息</button>

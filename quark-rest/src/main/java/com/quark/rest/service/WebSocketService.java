@@ -52,4 +52,20 @@ public class WebSocketService {
         }
 
     }
+    /**
+     * 单播
+     * @param id
+     */
+    public void sendToOneAndFrom(Integer id,SocketMessage socketMessage){
+        boolean islogin = redisService.setHasValue(REDIS_USERID_KEY, id);
+//        判断用户是否已经登录
+//        boolean islogin = userService.loginId.contains(id);
+        if (islogin){
+            //查询未查看的通知
+            long count = notificationService.getNotificationCount(id);
+            SocketMessage message = SocketMessage.build((int) count);
+            webSocketController.template.convertAndSendToUser(id+"","/message",message);
+        }
+
+    }
 }
