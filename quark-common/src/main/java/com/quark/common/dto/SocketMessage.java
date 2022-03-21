@@ -1,5 +1,7 @@
 package com.quark.common.dto;
 
+import com.quark.common.entity.User;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +11,15 @@ import java.io.Serializable;
 public class SocketMessage implements Serializable{
 
     private Integer notice;
+    private User from;
+
+    public User getFrom() {
+        return from;
+    }
+
+    public void setFrom(User from) {
+        this.from = from;
+    }
 
     private String message;
 
