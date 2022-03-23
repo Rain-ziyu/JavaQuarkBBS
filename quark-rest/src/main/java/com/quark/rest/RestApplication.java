@@ -3,6 +3,7 @@ package com.quark.rest;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.Properties;
  */
 @SpringBootApplication
 @EnableCaching//缓存支持
+
 public class RestApplication {
 
     public static void main(String[] args) throws IOException {

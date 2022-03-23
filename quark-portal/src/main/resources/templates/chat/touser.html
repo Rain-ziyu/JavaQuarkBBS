@@ -7,18 +7,25 @@
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/chat.css}">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 <body style="margin-top: 65px;">
 <div th:include="common/header::header"></div>
-<div class="chatbox">
+<div class="chatbox" id="app">
+
     <div class="chat_top fn-clear">
         <!-- LOGO usericon username 暂时不写 -->
         <div class="logo"></div>
         <div class="uinfo fn-clear">
-            <div class="uface"><img src="" width="40" height="40" alt=""/></div>
+            <div class="uface"><img v-bind:src="icon" width="40" height="40" alt=""/></div>
             <div class="uname"></div>
         </div>
     </div>
+
     <div class="chat_message fn-clear">
         <div class="chat_left">
             <div class="message_box" id="message_box">
@@ -44,80 +51,95 @@
     </div>
 </div>
 <script>
-<!--    获取自己的userid以及对方的userid-->
-let userId;
-let user;
-let toUserId = $.getUrlParam('toUserId');
-//连接服务器webSocket操作
-var socket = new SockJS(quark_webSocket_api, undefined, {protocols_whitelist: ['websocket']});
-var stompClient  = Stomp.over(socket);
-$.ajax({
-    type: 'GET',
-    url: quark_getUser_api+ getCookie(),
-    contentType: 'application/json;charset=UTF-8',
-    dataType: 'json',
-    async : false,
-    success: function (data) {
-        if (data.status == 200) {
-            userId = data.data.user.id
-            user = data.data.user
-            connectWebSocket(userId)
+    <!--    获取自己的userid以及对方的userid-->
+    let userId;
+    let user;
+    debugger
+    let toUserId = $.getUrlParam('toUserId');
+    let icon = $.getUrlParam('icon');
+    //连接服务器webSocket操作
+    var socket = new SockJS(quark_webSocket_api, undefined, {protocols_whitelist: ['websocket']});
+    var stompClient = Stomp.over(socket);
+    $.ajax({
+        type: 'GET',
+        url: quark_getUser_api + getCookie(),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            if (data.status == 200) {
+                userId = data.data.user.id
+                user = data.data.user
+                connectWebSocket(userId)
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
         }
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-    }
-});
+    });
+    var app = new Vue({
+        el: '#app',
+        data: {
+            icon: icon
+        },
+    })
 
 
     function connectWebSocket(id) {
         //接收到广播推送
-        stompClient.connect({},function (frame) {
-            stompClient.subscribe('/topic/all', function(message){
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/all', function (message) {
             });
-
             //接收到一对一推送
-            stompClient.subscribe('/user/' + id + '/message', function(message){
+            stompClient.subscribe('/user/' + id + '/message', function (message) {
                 debugger
                 var obj = JSON.parse(message.body);
-                if(obj.from.id===toUserId) {
+                if (obj.from.id.toString() == toUserId) {
                     var htmlData = '<div class="msg_item fn-clear">'
-                        + '<div class="uface"><a href="user/home?id='+user.uid+'" target="view_window"><img src="'+user.icon+'" width="40" height="40"  alt=""/></a></div>'
+                        + '<div class="uface"><a href="user/home?id=' + obj.from.uid + '" target="view_window"><img src="' + obj.from.icon + '" width="40" height="40"  alt=""/></a></div>'
                         + '<div class="item_right">'
-                        + '<div class="msg own">' + obj.msg + '</div>'
-                        + '<div class="name_time">' + user.name +' · '+ obj.time +'</div>'
+                        + '<div class="msg own">' + obj.message.toString() + '</div>'
+                        + '<div class="name_time">' + obj.from.username + ' · ' + obj.time + '</div>'
                         + '</div>'
                         + '</div>';
                     $("#message_box").append(htmlData);
                     $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
-                    $("#message").val('');
+                    //加上此行会导致消息框刷新，对方字段丢失
+                    // $("#message").val('');
                 }
             });
         })
     }
-//构造信息
-function buildMessage(msg) {
-    var obj = {
-        from:user,
-        message:msg
-    };
-    return JSON.stringify(obj);
-}
+
+    //构造信息
+    function buildMessage(msg) {
+        var obj = {
+            from: user,
+            message: msg,
+            to:toUserId,
+            time: new Date().toString()
+        };
+        return JSON.stringify(obj);
+    }
+
     //发送消息
     function sendMessage(obj) {
-        stompClient.send('/user/' + toUserId + '/message', {}, obj);
+        debugger
+        stompClient.send('/app/user', {}, obj);
     }
-function showMessage(msg) {
-    var htmlData = '<div class="msg_item fn-clear">'
-        + '<div class="uface"><a href="user/home?id='+user.uid+'" target="view_window"><img src="'+user.icon+'" width="40" height="40"  alt=""/></a></div>'
-        + '<div class="item_right">'
-        + '<div class="msg own">' + msg + '</div>'
-        + '<div class="name_time">' + user.username +' · '+ new Date().toString() +'</div>'
-        + '</div>'
-        + '</div>';
-    $("#message_box").append(htmlData);
-    $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
-    $("#message").val('');
-}
+
+    function showMessage(msg) {
+        var htmlData = '<div class="msg_item fn-clear">'
+            + '<div class="uface"><a href="user/home?id=' + user.uid + '" target="view_window"><img src="' + user.icon + '" width="40" height="40"  alt=""/></a></div>'
+            + '<div class="item_right">'
+            + '<div class="msg own">' + msg + '</div>'
+            + '<div class="name_time">' + user.username + ' · ' + new Date().toString() + '</div>'
+            + '</div>'
+            + '</div>';
+        $("#message_box").append(htmlData);
+        $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+        $("#message").val('');
+    }
+
     // 在这里进行发送操作
     layui.use(['layer'], function () {
         $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
