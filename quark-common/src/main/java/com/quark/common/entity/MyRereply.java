@@ -25,6 +25,28 @@ public class MyRereply implements Serializable {
 
     private User bhfuser;
 
+    private Integer replyId;
+
+    @Override
+    public String toString() {
+        return "MyRereply{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", initTime=" + initTime +
+                ", up=" + up +
+                ", hfuser=" + hfuser +
+                ", bhfuser=" + bhfuser +
+                ", replyId=" + replyId +
+                '}';
+    }
+
+    public Integer getReplyId() {
+        return replyId;
+    }
+
+    public void setReplyId(Integer replyId) {
+        this.replyId = replyId;
+    }
 
     public User getHfuser() {
         return hfuser;
@@ -75,15 +97,4 @@ public class MyRereply implements Serializable {
         this.up = up;
     }
 
-    @Override
-    public String toString() {
-        return "MyRereply{" +
-                "id=" + id +
-                ", content='" + content + '\'' +
-                ", initTime=" + initTime +
-                ", up=" + up +
-                ", hfuser=" + hfuser +
-                ", bhfuser=" + bhfuser +
-                '}';
-    }
 }

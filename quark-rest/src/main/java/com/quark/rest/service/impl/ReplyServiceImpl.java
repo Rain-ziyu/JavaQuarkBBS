@@ -103,4 +103,9 @@ public class ReplyServiceImpl extends BaseServiceImpl<ReplyDao, Reply> implement
         IPage<MyReply> myReplyIPage = myReplyMapper.listMyReply(page, wrapper);
         return myReplyIPage;
     }
+
+    @Override
+    public void saveRereply(MyRereply reply) {
+        myReplyMapper.saveRereply(reply);
+    }
 }

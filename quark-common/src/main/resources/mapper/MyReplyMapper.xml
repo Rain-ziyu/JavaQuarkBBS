@@ -25,6 +25,22 @@
             <result property="username" column="bhfusername"/>
         </association>
     </resultMap>
+    <insert id="saveRereply">
+        insert into
+            my_reply
+                (content,
+                hfuser_id,
+                bhfuser_id,
+                reply_id
+                )
+        values
+                (
+                ${content},
+                ${hfuser.id},
+                ${bhfuser.id},
+                ${replyId}
+                )
+    </insert>
     <select id="listMyReply" resultMap="reply">
         select r.*,
                u.username

@@ -2,6 +2,7 @@ package com.quark.rest.controller;
 
 import com.quark.common.base.BaseController;
 import com.quark.common.dto.QuarkResult;
+import com.quark.common.entity.MyRereply;
 import com.quark.common.entity.Reply;
 import com.quark.common.entity.User;
 import com.quark.rest.service.ReplyService;
@@ -56,6 +57,20 @@ public class ReplyController extends BaseController{
         });
         return result;
     }
+    @PostMapping("/rereply")
+    public QuarkResult CreateRereply(MyRereply reply, String token){
+        QuarkResult result = restProcessor(() -> {
+            if (token == null) return QuarkResult.warn("请先登录！");
 
+            User userbytoken = userService.getUserByToken(token);
+            if (userbytoken == null) return QuarkResult.warn("用户不存在,请先登录！");
 
+            User user = userService.findOne(userbytoken.getId());
+            if (user.getEnable() != 1) return QuarkResult.warn("用户处于封禁状态！");
+            reply.setHfuser(userbytoken);
+            replyService.saveRereply(reply);
+            return QuarkResult.ok();
+        });
+        return result;
+    }
 }

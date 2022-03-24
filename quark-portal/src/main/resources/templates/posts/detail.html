@@ -83,8 +83,8 @@
                                     </div>
                                     <div class="jieda-reply">
                                         {{item1.content}}
-                                        <span type="reply" style="float:right" onclick="Reply('{{item1.id}}','{{item1.hfuser.id}}');"><i class="iconfont icon-svgmoban53"></i>回复</span>
-                                        <span class="jieda-zan" type="zan" style="float:right" ><i class="iconfont icon-zan"></i><em>{{item.up}}</em></span>
+                                        <span type="reply" style="float:right" onclick="Reply('{{item1.id}}','{{item1.hfuser.id}}','{{item.id}}');"><i class="iconfont icon-svgmoban53"></i>回复</span>
+                                        <span class="jieda-zan" type="zan" style="float:right" ><i class="iconfont icon-zan"></i><em>{{item1.up}}</em></span>
                                         <div id="{{item1.id}}"></div>
                                     </div>
                                 </div>
@@ -134,14 +134,40 @@
 <!--<script th:src="@{/js/quark_api.js}"></script>-->
 <script type="text/javascript">
 
-    function Reply(id,uid){
+    function Reply(id,uid,rid){
         var html="<div class='reply_textarea'>"+
-            "<textarea name='' rows='5' style='width:100%;overflow:auto;word-break:break-all;'>"+
+            "<textarea id='textarea' rows='5' style='width:100%;overflow:auto;word-break:break-all;'>"+
             "</textarea><br/>"+
-            "<input type='submit' value='发表' />"+
+            "<input type='submit' onclick='addReply(#{uid},#{rid});' value='发表' />"+
             "</div>";
+        html = html.replace(/#{uid}/g,""+uid);
+        html = html.replace(/#{rid}/g,""+rid);
         $(".reply_textarea").remove();
         $("#"+id).append(html);
+        console.log(html);
+    }
+    function addReply(uid,rid){
+        $.post(quark_rereply_add_api, {
+                content: $('#textarea').val(),
+                bhfuser: uid,
+                replyId: rid,
+                token: getCookie()
+            },
+            function (data) {
+                if (data.status == 200) {
+                    layer.msg("回复成功", {
+                        icon: 1,
+                        time: 1000 //2秒关闭
+                    }, function () {
+                        location.reload();
+                    });
+                } else if (data.status == 400) {
+                    layer.msg(data.error, {icon: 7});
+                } else {
+                    layer.msg(data.error, {icon: 5});
+                }
+            }, "json");;
+
     }
 
     var id = $.getUrlParam('id');
@@ -204,7 +230,6 @@
                 posts: {id: id},
                 token: getCookie()
             }
-            debugger
             $.ajax({
                 type: 'PUT',
                 data: JSON.stringify(param) ,

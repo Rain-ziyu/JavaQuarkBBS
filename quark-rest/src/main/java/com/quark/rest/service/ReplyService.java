@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.quark.common.base.BaseService;
 import com.quark.common.entity.MyReply;
+import com.quark.common.entity.MyRereply;
 import com.quark.common.entity.Reply;
 import com.quark.common.entity.User;
 import org.apache.ibatis.annotations.Param;
@@ -31,4 +32,6 @@ public interface ReplyService extends BaseService<Reply> {
     void saveReply(Reply reply,Integer postsId,User user);
 
     IPage<MyReply> listMyReply(com.baomidou.mybatisplus.extension.plugins.pagination.Page<MyReply> page, @Param(Constants.WRAPPER) QueryWrapper<MyReply> wrapper, Integer postid);
+
+    void saveRereply(MyRereply reply);
 }
