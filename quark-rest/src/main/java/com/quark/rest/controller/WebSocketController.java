@@ -38,7 +38,6 @@ public class WebSocketController {
     @MessageMapping("/topic/all")
     @SendTo("/topic/all")
     public SocketMessage sendToAll(SocketMessage message){
-
         log.info(message.toString());
         return message;
     }
@@ -49,7 +48,6 @@ public class WebSocketController {
 //        设置缓存，以缓存用户聊天
         Integer fromUserKey = message.getFrom().getId();
         Integer toUserKey = message.getTo();
-
         String generateID = GenerateUniqueID.GenerateID(fromUserKey, toUserKey);
         redisService.setListValue(generateID,message);
         redisService.setListTime(generateID,60*24*7);

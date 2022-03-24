@@ -111,8 +111,7 @@ public class RedisService<T> {
     public Long setListValue(String key, T t){
         SetOperations<String,T> opsForSet = redisTemplate.opsForSet();
         ListOperations opsList = redisTemplate.opsForList();
-
-        return  opsList.leftPush(key, t);
+        return  opsList.rightPush(key, t);
     }
 
     /**

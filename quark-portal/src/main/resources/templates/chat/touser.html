@@ -21,7 +21,7 @@
         <!-- LOGO usericon username 暂时不写 -->
         <div class="logo"></div>
         <div class="uinfo fn-clear">
-            <div class="uface"><img v-bind:src="icon" width="40" height="40" alt=""/></div>
+            <div class="uface"><img v-bind:src="toUser.icon" width="40" height="40" alt=""/></div>
             <div class="uname"></div>
         </div>
     </div>
@@ -45,7 +45,13 @@
 
         <!-- 在线用户版块 -->
         <div class="chat_right">
-            <ul class="user_list" id="userinfo">
+            <ul id="userinfo">
+                <div class="logo"></div>
+                <div class="uinfo fn-clear">
+                    <div class="uname" v-text="toUser.username"></div>
+                    <div class="uname" v-text="toUser.email"></div>
+                    <div class="uname" v-text="toUser.signature"></div>
+                </div>
             </ul>
         </div>
     </div>
@@ -54,9 +60,11 @@
     <!--    获取自己的userid以及对方的userid-->
     let userId;
     let user;
+    let messageCount = 0;
     debugger
     let toUserId = $.getUrlParam('toUserId');
-    let icon = $.getUrlParam('icon');
+    let toUser;
+    findToUserInfo(toUserId);
     //连接服务器webSocket操作
     var socket = new SockJS(quark_webSocket_api, undefined, {protocols_whitelist: ['websocket']});
     var stompClient = Stomp.over(socket);
@@ -68,18 +76,75 @@
         async: false,
         success: function (data) {
             if (data.status == 200) {
-                userId = data.data.user.id
-                user = data.data.user
-                connectWebSocket(userId)
+                connectWebSocket();
+                user = data.data.user;
+                debugger;
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
         }
     });
+    //第一次点击进来查询浏览历史
+    getHistory(getCookie(), toUserId, 0, 20);
+
+    function findToUserInfo(toUserId) {
+        $.ajax({
+            type: 'GET',
+            url: quark_userInfo_detail_api + toUserId,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                if (data.status == 200) {
+                    debugger
+                    toUser = data.data;
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
+    }
+
+    function getHistory(token, toUserId, begin, end) {
+        $.ajax({
+            type: 'GET',
+            url: quark_chat_History_api + "?fromToken=" + token + "&toUserId=" + toUserId + "&begin=" + begin + "&end=" + end,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                debugger
+                for (let i = 0; i < data.data.length; i++) {
+                    let msg = data.data[i];
+                    var htmlData = '<div class="msg_item fn-clear">'
+                        + '<div class="uface"><a href="user/home?id=' + msg.from.uid + '" target="view_window"><img src="' + msg.from.icon + '" width="40" height="40"  alt=""/></a></div>'
+                        + '<div class="item_right">'
+                        + '<div class="msg own">' + msg.message.toString() + '</div>'
+                        + '<div class="name_time">' + msg.from.username + ' · ' + msg.time + '</div>'
+                        + '</div>'
+                        + '</div>';
+                    $("#message_box").append(htmlData);
+                    $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+                    //加上此行会导致消息框刷新，对方字段丢失
+                    // $("#message").val('');
+
+
+                }
+
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+    }
+
     var app = new Vue({
+
         el: '#app',
         data: {
-            icon: icon
+            toUser: toUser,
+            messageCount:messageCount
         },
     })
 
@@ -91,23 +156,29 @@
             });
             //接收到一对一推送
             stompClient.subscribe('/user/' + id + '/message', function (message) {
-                debugger
-                var obj = JSON.parse(message.body);
-                if (obj.from.id.toString() == toUserId) {
-                    var htmlData = '<div class="msg_item fn-clear">'
-                        + '<div class="uface"><a href="user/home?id=' + obj.from.uid + '" target="view_window"><img src="' + obj.from.icon + '" width="40" height="40"  alt=""/></a></div>'
-                        + '<div class="item_right">'
-                        + '<div class="msg own">' + obj.message.toString() + '</div>'
-                        + '<div class="name_time">' + obj.from.username + ' · ' + obj.time + '</div>'
-                        + '</div>'
-                        + '</div>';
-                    $("#message_box").append(htmlData);
-                    $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
-                    //加上此行会导致消息框刷新，对方字段丢失
-                    // $("#message").val('');
-                }
+                addMessageBox(message);
             });
         })
+    }
+
+    function addMessageBox(message) {
+        debugger
+        var obj = JSON.parse(message.body);
+        if (obj.from.id.toString() == toUserId) {
+            var htmlData = '<div class="msg_item fn-clear">'
+                + '<div class="uface"><a href="user/home?id=' + obj.from.id + '" target="view_window"><img src="' + obj.from.icon + '" width="40" height="40"  alt=""/></a></div>'
+                + '<div class="item_right">'
+                + '<div class="msg own">' + obj.message.toString() + '</div>'
+                + '<div class="name_time">' + obj.from.username + ' · ' + obj.time + '</div>'
+                + '</div>'
+                + '</div>';
+            $("#message_box").append(htmlData);
+            $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+            //加上此行会导致消息框刷新，对方字段丢失
+            // $("#message").val('');
+        }else {
+            messageCount++;
+        }
     }
 
     //构造信息
@@ -115,7 +186,7 @@
         var obj = {
             from: user,
             message: msg,
-            to:toUserId,
+            to: toUserId,
             time: new Date().toString()
         };
         return JSON.stringify(obj);
@@ -129,7 +200,7 @@
 
     function showMessage(msg) {
         var htmlData = '<div class="msg_item fn-clear">'
-            + '<div class="uface"><a href="user/home?id=' + user.uid + '" target="view_window"><img src="' + user.icon + '" width="40" height="40"  alt=""/></a></div>'
+            + '<div class="uface"><a href="user/home?id=' + user.id + '" target="view_window"><img src="' + user.icon + '" width="40" height="40"  alt=""/></a></div>'
             + '<div class="item_right">'
             + '<div class="msg own">' + msg + '</div>'
             + '<div class="name_time">' + user.username + ' · ' + new Date().toString() + '</div>'

@@ -21,7 +21,7 @@ import java.util.List;
 @CrossOrigin
 @Api(value = "获取历史消息")
 @RestController
-@RequestMapping("/Chat")
+@RequestMapping("/chat")
 public class ChatController extends BaseController {
     @Autowired
     private RedisService redisService;
@@ -29,10 +29,10 @@ public class ChatController extends BaseController {
     private UserService userService;
     @ApiOperation("根据fromId和userId获取")
     @GetMapping
-    public QuarkResult getChatHistoryById(String fromToken,Integer toId,Integer begin,Integer end){
+    public QuarkResult getChatHistoryById(String fromToken,Integer toUserId,Integer begin,Integer end){
         QuarkResult result = restProcessor(() -> {
             User user = userService.getUserByToken(fromToken);
-            String generateID = GenerateUniqueID.GenerateID(user.getId(), toId);
+            String generateID = GenerateUniqueID.GenerateID(user.getId(), toUserId);
             List listValue = redisService.getListValue(generateID, begin, end);
             return QuarkResult.ok(listValue);
         });
