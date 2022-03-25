@@ -16,7 +16,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic","/user");//可以在topic，user域向客户端发送消息,即前台被动的接受客户端发送的消息
+        registry.enableSimpleBroker("/topic","/user");//可以在topic，user域向客户端发送消息,即前端被动的接受服务端发送的消息
         registry.setUserDestinationPrefix("/user/");//指定用户发送（一对一）的主题前缀是“/user/”
         registry.setApplicationDestinationPrefixes("/app");//客户端向服务端发送时的主题上面需要加"/app"作为前缀；
     }

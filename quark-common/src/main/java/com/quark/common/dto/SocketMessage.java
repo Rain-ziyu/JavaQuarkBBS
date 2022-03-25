@@ -14,7 +14,8 @@ import java.util.Date;
 @ToString
 @Data
 public class SocketMessage implements Serializable{
-
+    private String messageId;
+    private Long alreadyCount;
     private Integer notice;
     private User from;
     private Integer to;

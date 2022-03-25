@@ -1,6 +1,7 @@
 package com.quark.rest.controller;
 
 import com.quark.common.dto.SocketMessage;
+import com.quark.rest.param.ReturnParam;
 import com.quark.rest.service.RedisService;
 import com.quark.rest.utils.GenerateUniqueID;
 import io.swagger.annotations.Api;
@@ -37,21 +38,31 @@ public class WebSocketController {
     @ApiOperation("WebSocket广播接口：客户端可以在/topic/all监听并接受服务端发回的消息")
     @MessageMapping("/topic/all")
     @SendTo("/topic/all")
-    public SocketMessage sendToAll(SocketMessage message){
+    public SocketMessage sendToAll(SocketMessage message) {
         log.info(message.toString());
         return message;
     }
 
+    @ApiOperation("处理客户端回传")
+    @MessageMapping("/client/return")
+    public void clientReturn(ReturnParam message) {
+        log.info(message.toString());
+        redisService.cacheString("AlreadyChat:"+message.getMessageId(), message.getAlreadyCount());
+    }
+
     @ApiOperation("WebSocket单播：客户端接收一对一消息的主题应该是“/user/” + 用户Id + “/message” ")
     @MessageMapping("/user")
-    public void sendToUser(SocketMessage message){
-//        设置缓存，以缓存用户聊天
+    public void sendToUser(SocketMessage message) {
         Integer fromUserKey = message.getFrom().getId();
         Integer toUserKey = message.getTo();
         String generateID = GenerateUniqueID.GenerateID(fromUserKey, toUserKey);
-        redisService.setListValue(generateID,message);
-        redisService.setListTime(generateID,60*24*7);
-        template.convertAndSendToUser(message.getTo()+"","/message",message);
+        Long listLength = redisService.getListLength(generateID);
+        message.setAlreadyCount(listLength + 1);
+        message.setMessageId(generateID);
+        template.convertAndSendToUser(message.getTo() + "", "/message", message);
+//        设置缓存，以缓存用户聊天
+        redisService.setListValue(generateID, message);
+        redisService.setListTime(generateID, 60 * 24 * 7);
     }
 
 

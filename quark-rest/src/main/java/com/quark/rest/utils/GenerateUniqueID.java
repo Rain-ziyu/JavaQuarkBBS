@@ -8,6 +8,9 @@ package com.quark.rest.utils;
  */
 public class GenerateUniqueID {
     public static String GenerateID(Integer from,Integer to) {
-        return "ZUT/Chat:"+(from>to?from+"/"+to:to+"/"+from);
+        return "Chat:"+(from>to?from+":"+to:to+":"+from);
+    }
+    public static String GenerateIDNo(Integer from,Integer to) {
+        return from>to?from+":"+to:to+":"+from;
     }
 }

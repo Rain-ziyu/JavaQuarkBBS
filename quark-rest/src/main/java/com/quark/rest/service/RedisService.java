@@ -29,6 +29,15 @@ public class RedisService<T> {
         ValueOperations<String, T> operations = redisTemplate.opsForValue();
         operations.set(key,t,time, TimeUnit.HOURS);
     }
+    /**
+     * 设置String缓存
+     * @param key
+     * @param t
+     */
+    public void cacheString(String key, T t){
+        ValueOperations<String, T> operations = redisTemplate.opsForValue();
+        operations.set(key,t);
+    }
 
     /**
      * 获取String缓存并更新
@@ -131,6 +140,14 @@ public class RedisService<T> {
      */
     public List getListValue(String key,int begin,int end){
         return   redisTemplate.boundListOps(key).range(begin, end);
+    }
+    /**
+     * 获取对应list类型的的key下的对应长度
+     * @param key
+     * @return
+     */
+    public Long getListLength(String key){
+        return   redisTemplate.boundListOps(key).size();
     }
 
 

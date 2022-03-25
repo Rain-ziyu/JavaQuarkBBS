@@ -2,8 +2,11 @@ package com.quark.rest.controller;
 
 import com.quark.common.base.BaseController;
 import com.quark.common.dto.QuarkResult;
+import com.quark.common.entity.Chat;
 import com.quark.common.entity.User;
+import com.quark.rest.param.ChatReturnParam;
 import com.quark.rest.param.CollectParam;
+import com.quark.rest.service.ChatService;
 import com.quark.rest.service.RedisService;
 import com.quark.rest.service.UserService;
 import com.quark.rest.utils.GenerateUniqueID;
@@ -12,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +31,8 @@ public class ChatController extends BaseController {
     private RedisService redisService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ChatService chatService;
     @ApiOperation("根据fromId和userId获取")
     @GetMapping
     public QuarkResult getChatHistoryById(String fromToken,Integer toUserId,Integer begin,Integer end){
@@ -35,6 +41,36 @@ public class ChatController extends BaseController {
             String generateID = GenerateUniqueID.GenerateID(user.getId(), toUserId);
             List listValue = redisService.getListValue(generateID, begin, end);
             return QuarkResult.ok(listValue);
+        });
+        return result;
+    }
+    @ApiOperation("为两个用户创建会话")
+    @PostMapping
+    public QuarkResult creatChat(@RequestBody Chat chat){
+        QuarkResult result = restProcessor(() -> {
+            chatService.creatChat(chat);
+            return QuarkResult.ok();
+        });
+        return result;
+    }
+    @ApiOperation("查询会话列表")
+    @GetMapping("/list")
+    public QuarkResult getChatList(String fromToken){
+        QuarkResult result = restProcessor(() -> {
+            User user = userService.getUserByToken(fromToken);
+            List<Chat> chats = chatService.selectChatList(user.getId());
+            List<ChatReturnParam> charUser = new ArrayList<>();
+            for (Chat chat : chats) {
+                Integer another = chat.getAnother(user.getId());
+                 String allKey = GenerateUniqueID.GenerateID(another,user.getId());
+                Integer count = (Integer) redisService.getString("AlreadyChat:"+allKey);
+                Long listLength = redisService.getListLength(allKey);
+                ChatReturnParam chatReturnParam = new ChatReturnParam();
+               chatReturnParam.setUser(userService.findOne(another));
+               chatReturnParam.setCount((int) (listLength-count));
+                charUser.add(chatReturnParam);
+            }
+            return QuarkResult.ok(charUser);
         });
         return result;
     }
