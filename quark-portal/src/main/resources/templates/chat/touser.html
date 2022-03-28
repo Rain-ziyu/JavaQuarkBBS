@@ -16,16 +16,18 @@
 <body style="margin-top: 65px;">
 <div th:include="common/header::header"></div>
 <div class="chatbox" id="app">
-    <div id="left">
+    <div id="left" v-if="toUserId == null">
         <h1>私信列表</h1>
         <ul class="infinite-list" style="overflow:auto ;margin-top: 41px; ">
-            <li v-for="(list,index) in chatList" :key="index">
+            <li v-for="(list,index) in chatList" :key="index" @click.stop="switchUserID($event,list)">
                 <el-col :span="8" style="width: 200px; height: 100px;">
-                    <el-card shadow="hover" style="width: 190px; height: 90px;" >
+                    <el-card shadow="hover" style="width: 190px; height: 90px;">
                         <el-avatar :size="40" :src="list.user.icon"></el-avatar>
                         <div style="margin-top: -50px;margin-left: 60px">
                             <h3 v-text="list.user.username"></h3>
                             <p>{{list.user.sex == 0 ? "男" : "女"}}</p>
+
+
                             <div style="margin-top: -38px;margin-left: 60px">
                                 <i class="el-icon-s-opportunity " v-if="list.count!=0"
                                    style="font-size: 40px;color: red">
@@ -35,8 +37,6 @@
                         </div>
                     </el-card>
                 </el-col>
-
-
             </li>
         </ul>
     </div>
@@ -63,7 +63,7 @@
                     <div class="facebox fn-clear">
                         <div class="expression"></div>
                         <div class="chat_type" id="chat_type">私聊</div>
-                        <button name="" class="sub_but">提 交</button>
+                        <button name="" class="sub_but" @click="send()">提 交</button>
                     </div>
                 </div>
             </div>
@@ -89,13 +89,6 @@
     let messageCount = 10;
     debugger
     let toUserId = $.getUrlParam('toUserId');
-    let toUser;
-    if (toUserId != null) {
-        findToUserInfo(toUserId);
-        //第一次点击进来查询浏览历史
-        getHistory(getCookie(), toUserId, 0, 20);
-    }
-
     //连接服务器webSocket操作
     var socket = new SockJS(quark_webSocket_api, undefined, {protocols_whitelist: ['websocket']});
     var stompClient = Stomp.over(socket);
@@ -116,7 +109,6 @@
         }
     });
 
-
     function findToUserInfo(toUserId) {
         $.ajax({
             type: 'GET',
@@ -127,7 +119,31 @@
             success: function (data) {
                 if (data.status == 200) {
                     debugger
-                    toUser = data.data;
+                    app.toUser = data.data;
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
+    }
+
+    function creatChat(userId, toUserId) {
+        let data = {
+            firstUserId: userId,
+            secondUserId: toUserId
+        }
+        $.ajax({
+            type: 'POST',
+            url: quark_chat_creatChat_api,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            async: false,
+            success: function (data) {
+                if (data.status == 200) {
+                    debugger
+                    console.log("create success")
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -137,6 +153,7 @@
     }
 
     function getHistory(token, toUserId, begin, end) {
+        let msg;
         $.ajax({
             type: 'GET',
             url: quark_chat_History_api + "?fromToken=" + token + "&toUserId=" + toUserId + "&begin=" + begin + "&end=" + end,
@@ -145,6 +162,7 @@
             async: false,
             success: function (data) {
                 debugger
+
                 for (let i = 0; i < data.data.length; i++) {
                     let msg = data.data[i];
                     var htmlData = '<div class="msg_item fn-clear">'
@@ -159,18 +177,21 @@
                     //加上此行会导致消息框刷新，对方字段丢失
                     // $("#message").val('');
                 }
+                msg = data.data[data.data.length - 1];
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             }
         });
+        return msg;
     }
 
     var app = new Vue({
 
         el: '#app',
         data: {
-            toUser: toUser,
-            chatList: []
+            toUser: null,
+            chatList: [],
+            toUserId: toUserId
         },
         created() {
             let that = this;
@@ -190,9 +211,44 @@
                 }
             });
         },
+        methods: {
+            switchUserID(event, list) {
+                toUserId = list.user.id;
+                findToUserInfo(toUserId);
+                //第一次点击进来查询浏览历史
+                document.getElementsByClassName("message_box").message_box.innerHTML = "   <div class=\"msg_item fn-clear\">\n" +
+                    "\n" +
+                    "                    </div>"
+                let msg = getHistory(getCookie(), toUserId, 0, 20);
+                debugger
+                //点击查看信息后修改已读消息数量
+                let tmp = {alreadyCount: msg.alreadyCount, messageId: msg.messageId}
+                stompClient.send('/app/client/return', {}, JSON.stringify(tmp));
+                list.count = 0;
+            },
+            send() {
+                $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+                var text = $("#message").val();
+                var msg = buildMessage(text);
+                showMessage(text.toString())
+                sendMessage(msg);
+            }
+        }
 
     })
 
+    if (toUserId != null) {
+        creatChat(user.id, toUserId);
+        findToUserInfo(toUserId);
+        //第一次点击进来查询浏览历史
+        let msg = getHistory(getCookie(), toUserId, 0, 20);
+        //点击查看信息后修改已读消息数量
+        if (msg != null) {
+            let tmp = {alreadyCount: msg.alreadyCount, messageId: msg.messageId}
+            stompClient.send('/app/client/return', {}, JSON.stringify(tmp));
+        }
+
+    }
 
     function connectWebSocket(id) {
         //接收到广播推送
@@ -270,16 +326,6 @@
         $("#message").val('');
     }
 
-    // 在这里进行发送操作
-    layui.use(['layer'], function () {
-        $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
-        $('.sub_but').click(function (event) {
-            var text = $("#message").val();
-            var msg = buildMessage(text);
-            showMessage(text.toString())
-            sendMessage(msg);
-        });
-    });
 </script>
 <style>
 

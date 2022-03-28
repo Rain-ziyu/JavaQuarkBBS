@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,13 +35,14 @@ public class ChatController extends BaseController {
     private UserService userService;
     @Autowired
     private ChatService chatService;
-    @ApiOperation("根据fromId和userId获取")
+    @ApiOperation("根据fromId和userId获取历史消息")
     @GetMapping
     public QuarkResult getChatHistoryById(String fromToken,Integer toUserId,Integer begin,Integer end){
         QuarkResult result = restProcessor(() -> {
             User user = userService.getUserByToken(fromToken);
             String generateID = GenerateUniqueID.GenerateID(user.getId(), toUserId);
             List listValue = redisService.getListValue(generateID, begin, end);
+            Collections.reverse(listValue);
             return QuarkResult.ok(listValue);
         });
         return result;
@@ -65,6 +68,12 @@ public class ChatController extends BaseController {
                  String allKey = GenerateUniqueID.GenerateID(another,user.getId());
                 Integer count = (Integer) redisService.getString("AlreadyChat:"+allKey);
                 Long listLength = redisService.getListLength(allKey);
+                if(listLength==null){
+                    listLength = Long.valueOf(0);
+                }
+                if(count==null){
+                    count = 0;
+                }
                 ChatReturnParam chatReturnParam = new ChatReturnParam();
                chatReturnParam.setUser(userService.findOne(another));
                chatReturnParam.setCount((int) (listLength-count));
