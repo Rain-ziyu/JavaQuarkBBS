@@ -107,7 +107,7 @@
         async: false,
         success: function (data) {
             if (data.status == 200) {
-                connectWebSocket();
+                connectWebSocket(data.data.user.id);
                 user = data.data.user;
                 debugger;
             }
