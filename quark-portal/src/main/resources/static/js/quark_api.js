@@ -27,6 +27,7 @@ var quark_user_update_psd_api = "http://"+hosts+"/user/password/";
 var quark_label_posts_api = "http://"+hosts+"/posts/label/";
 var quark_webSocket_api = "http://"+hosts+"/quarkServer";
 var quark_notification_api="http://"+hosts+"/notification/";
+var quark_adv_getList_api="http://"+hosts+"/adv";
 var quark_chat_webSocket_api = "ws://124.222.44.157:8083/websocket";
 function setCookie(data) {
     var expiresDate= new Date();

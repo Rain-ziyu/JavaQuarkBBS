@@ -10,6 +10,7 @@
 <body>
 
 <div th:include="common/header::header"></div>
+<div class="adv" th:include="common/adv::adv"></div>
 
 <div class="main layui-clear">
     <div class="wrap">
@@ -96,7 +97,8 @@
                                 <span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
                             </div>
                         </li>
-                        {{# }); }} {{# if(d.total === 0){ }}
+                        {{# }); }}
+                        {{# if(d.total === 0){ }}
                         <li class="fly-none">没有任何回答</li>
                         {{# } }}
                         <!--  -->
@@ -107,6 +109,7 @@
             <div id="postss"></div>
 
             <div id="pager"></div>
+
             <div class="layui-form layui-form-pane">
                 <form method="post">
                     <div class="layui-form-item layui-form-text">

@@ -22,6 +22,9 @@ i {
     min-height: 600px;
     margin: 0 auto 15px;
 }
+.adv{
+
+}
 
 .wrap {
     float: left;
@@ -1990,7 +1993,10 @@ body .fly-user-main {
 .layer-ext-ul li {
     margin: 8px;
 }
-
+.adv{
+    width: 1080px;
+    margin: 0 auto 15px;
+}
 .layer-ext-case .layui-layer-title {
     border: none;
     background-color: #009688;

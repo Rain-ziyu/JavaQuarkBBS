@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quark.common.mapper.AdvertisementMapper">
+    <resultMap id="BaseResultMap" type="com.quark.common.entity.Advertisement">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="imgUrl" jdbcType="VARCHAR" property="imgUrl"/>
+        <result column="webPageUrl" jdbcType="VARCHAR" property="webPageUrl"/>
+        <result column="info" jdbcType="VARCHAR" property="info"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="endDate" jdbcType="DATE" property="endDate"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="advLocation" jdbcType="VARCHAR" property="advLocation"/>
+        <association property="label" javaType="com.quark.common.entity.Label">
+            <id property="id" column="label"/>
+        </association>
+    </resultMap>
+    <insert id="saveAdv">
+        insert into quark_advertisement (imgUrl,webPageUrl,info,telephone,label,endDate,status,advLocation)
+        values (#{imgUrl},#{webPageUrl},#{info},#{telephone},#{label.id},#{endDate},#{status},#{advLocation})
+    </insert>
+    <update id="updateAdv">
+        update quark_advertisement set imgUrl=#{imgUrl},webPageUrl=#{webPageUrl},info = #{info},telephone = #{telephone},label=#{label.id},endDate=#{endDate},status=#{status},advLocation=#{advLocation}
+         where id=#{id}
+    </update>
+    <select id="getAdvList" resultMap="BaseResultMap">
+        select `id`,`imgUrl`,`webPageUrl`,`info`,`telephone`,`label`,`endDate`,`status`,`advLocation` from quark_advertisement
+    </select>
+    <select id="getAdvListByLabel" resultMap="BaseResultMap">
+        select `id`,`imgUrl`,`webPageUrl`,`info`,`telephone`,`label`,`endDate`,`status`,`advLocation` from quark_advertisement where label = #{label}
+    </select>
+
+
+</mapper>
