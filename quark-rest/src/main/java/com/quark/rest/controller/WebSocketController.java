@@ -62,6 +62,7 @@ public class WebSocketController {
         template.convertAndSendToUser(message.getTo() + "", "/message", message);
 //        设置缓存，以缓存用户聊天
         redisService.setListValue(generateID, message);
+        redisService.cacheString("AlreadyChat:"+GenerateUniqueID.GenerateIDNo(message.getFrom().getId(), message.getTo()), message.getAlreadyCount());
         redisService.setListTime(generateID, 60 * 24 * 7);
     }
 

@@ -11,6 +11,6 @@ public class GenerateUniqueID {
         return "Chat:"+(from>to?from+":"+to:to+":"+from);
     }
     public static String GenerateIDNo(Integer from,Integer to) {
-        return from>to?from+":"+to:to+":"+from;
+        return "Chat:"+from+":"+to;
     }
 }

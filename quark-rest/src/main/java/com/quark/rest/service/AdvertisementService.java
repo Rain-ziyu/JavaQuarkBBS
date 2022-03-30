@@ -13,4 +13,6 @@ public interface AdvertisementService {
     public void updateByAdv(Advertisement advertisement);
     public List<Advertisement> getAdvAll();
     public void saveAdv(Advertisement advertisement);
+
+    List<Advertisement> getAdvByUserId(Integer id);
 }

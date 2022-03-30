@@ -30,4 +30,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public void saveAdv(Advertisement advertisement) {
         advertisementMapper.saveAdv(advertisement);
     }
+
+    @Override
+    public List<Advertisement> getAdvByUserId(Integer id) {
+        return advertisementMapper.getAdvListByUserId(id);
+    }
 }

@@ -14,4 +14,6 @@ public interface AdvertisementMapper {
     public void saveAdv(Advertisement advertisement);
     public void updateAdv(Advertisement advertisement);
     public List<Advertisement> getAdvListByLabel(String label);
+
+    List<Advertisement> getAdvListByUserId(Integer id);
 }

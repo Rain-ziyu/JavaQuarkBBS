@@ -275,7 +275,7 @@
                 + '</div>';
             $("#message_box").append(htmlData);
             //在这里进行一次读取消息的操作，向服务器回传
-            let tmp = {alreadyCount: obj.alreadyCount, messageId: obj.messageId}
+            let tmp = {alreadyCount: obj.alreadyCount, messageId: "Chat:"+user.id+":"+toUserId}
             stompClient.send('/app/client/return', {}, JSON.stringify(tmp));
             $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
             //加上此行会导致消息框刷新，对方字段丢失

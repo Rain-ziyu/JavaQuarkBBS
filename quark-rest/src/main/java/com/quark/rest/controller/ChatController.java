@@ -66,7 +66,8 @@ public class ChatController extends BaseController {
             for (Chat chat : chats) {
                 Integer another = chat.getAnother(user.getId());
                  String allKey = GenerateUniqueID.GenerateID(another,user.getId());
-                Integer count = (Integer) redisService.getString("AlreadyChat:"+allKey);
+                 String key = GenerateUniqueID.GenerateIDNo(user.getId(),another);
+                Integer count = (Integer) redisService.getString("AlreadyChat:"+key);
                 Long listLength = redisService.getListLength(allKey);
                 if(listLength==null){
                     listLength = Long.valueOf(0);
