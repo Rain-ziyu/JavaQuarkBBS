@@ -57,7 +57,6 @@ public class RankController extends BaseController {
         QuarkResult result = restProcessor(() -> {
             List<Object> users = redisService.getString(REDIS_RANK_USERS);
             if (users != null) return QuarkResult.ok(users);
-
             users = rankService.findUserRank();
             redisService.cacheString(REDIS_RANK_USERS, users, 1);
             return QuarkResult.ok(users);

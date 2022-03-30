@@ -153,6 +153,8 @@ public class UserAuthHandler extends SimpleChannelInboundHandler {
                 return;
             case MESSAGE_REQUEST_CODE:
                 break;//普通的消息留给MessageHandler处理
+            case User_MESSAGE_REQUEST_CODE:
+                break;//普通的消息留给MessageHandler处理
             default:
                 logger.warn("The type [{}] can't be auth!!!", type);
                 return;

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>私聊</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body style="margin-top: 65px;">
+<div th:include="common/header::header"></div>
+<div class="chatbox" id="app">
+    <div id="left" v-if="toUserId == null">
+        <h1>私信列表</h1>
+        <ul class="infinite-list" style="overflow:auto ;margin-top: 41px; ">
+            <li v-for="(list,index) in chatList" :key="index" @click.stop="switchUserID($event,list)">
+                <el-col :span="8" style="width: 200px; height: 100px;">
+                    <el-card shadow="hover" style="width: 190px; height: 90px;">
+                        <el-avatar :size="40" :src="list.user.icon"></el-avatar>
+                        <div style="margin-top: -50px;margin-left: 60px">
+                            <h3 v-text="list.user.username"></h3>
+                            <p>{{list.user.sex == 0 ? "男" : "女"}}</p>
+
+
+                            <div style="margin-top: -38px;margin-left: 60px">
+                                <i class="el-icon-s-opportunity " v-if="list.count!=0"
+                                   style="font-size: 40px;color: red">
+                                </i>
+                                <div style="margin-top: -30px;margin-left: 12px;    color: white">{{list.count}}</div>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </li>
+        </ul>
+    </div>
+    <div id="main">
+        <div class="chat_top fn-clear">
+            <!-- LOGO usericon username 暂时不写 -->
+            <div class="logo"></div>
+            <div class="uinfo fn-clear">
+                <div class="uface" v-if="toUser!=null"><img v-bind:src="toUser.icon" width="40" height="40" alt=""/>
+                </div>
+                <div class="uname"></div>
+            </div>
+        </div>
+
+        <div class="chat_message fn-clear">
+            <div class="chat_left">
+                <div class="message_box" id="message_box">
+                    <div class="msg_item fn-clear">
+
+                    </div>
+                </div>
+                <div class="write_box" v-if="toUser!=null">
+                    <textarea id="message" name="message" class="write_area" placeholder="说点啥吧..."></textarea>
+                    <div class="facebox fn-clear">
+                        <div class="expression"></div>
+                        <div class="chat_type" id="chat_type">私聊</div>
+                        <button name="" class="sub_but" @click="send()">提 交</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 在线用户版块 -->
+            <div class="chat_right" v-if="toUser!=null">
+                <ul id="userinfo">
+                    <div class="logo"></div>
+                    <div class="uinfo fn-clear">
+                        <div class="uname" v-text="toUser.username"></div>
+                        <div class="uname" v-text="toUser.email"></div>
+                        <div class="uname" v-text="toUser.signature"></div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    <!--    获取自己的userid以及对方的userid-->
+    let userId;
+    let user;
+    let messageCount = 10;
+    debugger
+    let toUserId = $.getUrlParam('toUserId');
+    //连接服务器webSocket操作
+    var socket = new SockJS(quark_webSocket_api, undefined, {protocols_whitelist: ['websocket']});
+    var stompClient = Stomp.over(socket);
+    $.ajax({
+        type: 'GET',
+        url: quark_getUser_api + getCookie(),
+        contentType: 'application/json;charset=UTF-8',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            if (data.status == 200) {
+                connectWebSocket(data.data.user.id);
+                user = data.data.user;
+                debugger;
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+        }
+    });
+
+    function findToUserInfo(toUserId) {
+        $.ajax({
+            type: 'GET',
+            url: quark_userInfo_detail_api + toUserId,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                if (data.status == 200) {
+                    debugger
+                    app.toUser = data.data;
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
+    }
+
+    function creatChat(userId, toUserId) {
+        let data = {
+            firstUserId: userId,
+            secondUserId: toUserId
+        }
+        $.ajax({
+            type: 'POST',
+            url: quark_chat_creatChat_api,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            async: false,
+            success: function (data) {
+                if (data.status == 200) {
+                    debugger
+                    console.log("create success")
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
+    }
+
+    function getHistory(token, toUserId, begin, end) {
+        let msg;
+        $.ajax({
+            type: 'GET',
+            url: quark_chat_History_api + "?fromToken=" + token + "&toUserId=" + toUserId + "&begin=" + begin + "&end=" + end,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                debugger
+
+                for (let i = 0; i < data.data.length; i++) {
+                    let msg = data.data[i];
+                    var htmlData = '<div class="msg_item fn-clear">'
+                        + '<div class="uface"><a href="user/home?id=' + msg.from.uid + '" target="view_window"><img src="' + msg.from.icon + '" width="40" height="40"  alt=""/></a></div>'
+                        + '<div class="item_right">'
+                        + '<div class="msg own">' + msg.message.toString() + '</div>'
+                        + '<div class="name_time">' + msg.from.username + ' · ' + msg.time + '</div>'
+                        + '</div>'
+                        + '</div>';
+                    $("#message_box").append(htmlData);
+                    $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+                    //加上此行会导致消息框刷新，对方字段丢失
+                    // $("#message").val('');
+                }
+                msg = data.data[data.data.length - 1];
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+        return msg;
+    }
+
+    var app = new Vue({
+
+        el: '#app',
+        data: {
+            toUser: null,
+            chatList: [],
+            toUserId: toUserId
+        },
+        created() {
+            let that = this;
+            $.ajax({
+                type: 'GET',
+                url: quark_chat_getChatList_api + "?fromToken=" + getCookie(),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    if (data.status == 200) {
+                        debugger
+                        that.chatList = data.data
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                }
+            });
+        },
+        methods: {
+            switchUserID(event, list) {
+                toUserId = list.user.id;
+                findToUserInfo(toUserId);
+                //第一次点击进来查询浏览历史
+                document.getElementsByClassName("message_box").message_box.innerHTML = "   <div class=\"msg_item fn-clear\">\n" +
+                    "\n" +
+                    "</div>"
+                let msg = getHistory(getCookie(), toUserId, 0, 20);
+                debugger
+                //点击查看信息后修改已读消息数量
+                let tmp = {alreadyCount: msg.alreadyCount, messageId: msg.messageId}
+                stompClient.send('/app/client/return', {}, JSON.stringify(tmp));
+                list.count = 0;
+            },
+            send() {
+                $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+                var text = $("#message").val();
+                var msg = buildMessage(text);
+                showMessage(text.toString())
+                sendMessage(msg);
+            }
+        }
+
+    })
+
+    if (toUserId != null) {
+        creatChat(user.id, toUserId);
+        findToUserInfo(toUserId);
+        //第一次点击进来查询浏览历史
+        let msg = getHistory(getCookie(), toUserId, 0, 20);
+        //点击查看信息后修改已读消息数量
+        if (msg != null) {
+            let tmp = {alreadyCount: msg.alreadyCount, messageId: msg.messageId}
+            stompClient.send('/app/client/return', {}, JSON.stringify(tmp));
+        }
+
+    }
+
+    function connectWebSocket(id) {
+        //接收到广播推送
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/all', function (message) {
+            });
+            //接收到一对一推送
+            stompClient.subscribe('/user/' + id + '/message', function (message) {
+                addMessageBox(message);
+            });
+        })
+    }
+
+    function addMessageBox(message) {
+        debugger
+        var obj = JSON.parse(message.body);
+        if (obj.from.id.toString() == toUserId) {
+            var htmlData = '<div class="msg_item fn-clear">'
+                + '<div class="uface"><a href="user/home?id=' + obj.from.id + '" target="view_window"><img src="' + obj.from.icon + '" width="40" height="40"  alt=""/></a></div>'
+                + '<div class="item_right">'
+                + '<div class="msg own">' + obj.message.toString() + '</div>'
+                + '<div class="name_time">' + obj.from.username + ' · ' + obj.time + '</div>'
+                + '</div>'
+                + '</div>';
+            $("#message_box").append(htmlData);
+            //在这里进行一次读取消息的操作，向服务器回传
+            let tmp = {alreadyCount: obj.alreadyCount, messageId: "Chat:"+user.id+":"+toUserId}
+            stompClient.send('/app/client/return', {}, JSON.stringify(tmp));
+            $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+            //加上此行会导致消息框刷新，对方字段丢失
+            // $("#message").val('');
+        } else {
+            //对于不接受的消息进行计数以及增加列表等操作
+            for (let i in app.chatList) {
+                if (app.chatList[i].user.id == obj.from.id) {
+                    app.chatList[i].count++;
+                    return;
+                }
+            }
+            let tmp = {
+                user: obj.from,
+                count: 1
+            }
+            app.chatList.push(tmp);
+        }
+    }
+
+    //构造信息
+    function buildMessage(msg) {
+        var obj = {
+            from: user,
+            message: msg,
+            to: toUserId,
+            time: new Date().toString()
+        };
+        return JSON.stringify(obj);
+    }
+
+    //发送消息
+    function sendMessage(obj) {
+        debugger
+        stompClient.send('/app/user', {}, obj);
+    }
+
+    function showMessage(msg) {
+        var htmlData = '<div class="msg_item fn-clear">'
+            + '<div class="uface"><a href="user/home?id=' + user.id + '" target="view_window"><img src="' + user.icon + '" width="40" height="40"  alt=""/></a></div>'
+            + '<div class="item_right">'
+            + '<div class="msg own">' + msg + '</div>'
+            + '<div class="name_time">' + user.username + ' · ' + new Date().toString() + '</div>'
+            + '</div>'
+            + '</div>';
+        $("#message_box").append(htmlData);
+        $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
+        $("#message").val('');
+    }
+
+</script>
+<style>
+
+    /*body{margin:0;}*/
+    #left {
+        width: 200px;
+        float: left;
+        height: 100%;
+    }
+
+    #main {
+        height: 100%;
+    }
+
+</style>
+</body>
+</html>

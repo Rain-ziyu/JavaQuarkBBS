@@ -24,4 +24,10 @@ public class PageController {
     public String chathome(){
         return "chat/home";
     }
+    @RequestMapping("/chat/touser")
+    public String chatUser(){
+        return "chat/touser";
+    }
+
+
 }

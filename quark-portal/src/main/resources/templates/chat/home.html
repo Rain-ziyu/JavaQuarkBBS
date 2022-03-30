@@ -187,16 +187,14 @@
         var msg = buildMessage(authtype, getCookie(), null);
         sendMessage(msg);
     }
-
+    // 在这里进行发送操作
     layui.use(['layer'], function () {
         $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
-
         $('.sub_but').click(function (event) {
             var text = $("#message").val();
             var msg = buildMessage(messagetype,null,text);
             sendMessage(msg);
         });
-
         userLogin();
     });
 </script>

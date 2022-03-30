@@ -107,7 +107,6 @@ public class QuarkChatServer implements Server {
                                 new IdleStateHandler(60, 0, 0), //定时检测链路是否读空闲
                                 authHandler,//认证Handler
                                 messageHandler//消息Handler
-
                         );
                     }
                 });

@@ -1,6 +1,7 @@
 package com.quark.chat.protocol;
 
 import com.alibaba.fastjson.JSONObject;
+import com.quark.chat.message.ChatRequestMessage;
 import com.quark.chat.utils.DateTimeUtil;
 import com.quark.common.entity.User;
 
@@ -81,6 +82,7 @@ public class QuarkChatProtocol {
         return buildProto(SYS_USERSINFO_CODE,map);
     }
 
+
     /**
      * Ping
      * @return
@@ -102,6 +104,18 @@ public class QuarkChatProtocol {
         map.put("msg",msg);
         return buildProto(MESSAGE_RESPONSE_CODE,map);
     }
+    public static String buildMessageCode(User user, ChatRequestMessage chatRequestMessage){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("uid",user.getId());
+        map.put("name",user.getUsername());
+        map.put("icon",user.getIcon());
+        map.put("time", DateTimeUtil.getCurrentDateTime());
+        map.put("msg",chatRequestMessage.getContent());
+        return buildProto(User_MESSAGE_RESPONSE_CODE,map);
+    }
+
+
+
     /**
      * Proto生成
      * @param type

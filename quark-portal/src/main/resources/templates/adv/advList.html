@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>投放列表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <!-- import Vue before Element -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div th:include="common/header::header"></div>
+<div id="app">
+    <el-table
+            :data="tableData"
+            style="width: 100%">
+        <el-table-column type="expand">
+            <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                    <el-carousel height="150px">
+                        <el-carousel-item v-for="item in tableData">
+                            <img class="small" :src="item.imgUrl"></img>
+                        </el-carousel-item>
+                    </el-carousel>
+                </el-form>
+            </template>
+        </el-table-column>
+        <el-table-column
+                label="广告名称"
+                prop="name">
+        </el-table-column>
+        <el-table-column
+                label="投放结束时间"
+                prop="endDate">
+        </el-table-column>
+        <el-table-column
+                label="投放状态"
+                prop="status"
+                :formatter="stateFormat">
+        </el-table-column>
+        <el-table-column
+                label="投放位置"
+                prop="advLocation">
+        </el-table-column>
+        <el-table-column
+                label="预留手机号"
+                prop="telephone">
+        </el-table-column>
+    </el-table>
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            tableData: [],
+        },
+        created() {
+            let that = this;
+            $.get(quark_adv_getByUser_api+"?token="+getCookie(), function (data) {
+                debugger
+                if (data.status === 200) {
+                    that.tableData=data.data
+                } else {
+                    layer.msg(data.error, {icon: 5});
+                }
+            });
+        }
+        ,
+        methods: {
+            //用于对状态字段进行格式化处理，prop属性是无法进行动态绑定的，使用formatter属性根据值进行格式化处理
+            stateFormat(row, column){
+                if (row.status === 1) {
+                    return '正在投放'
+                } else  {
+                    return '未投放'
+                }
+            }
+        }
+
+    })
+</script>
+<div th:include="common/footer::footer"></div>
+<style>
+    .el-carousel__item h3 {
+        color: #475669;
+        font-size: 14px;
+        opacity: 0.75;
+        line-height: 150px;
+        margin: 0;
+    }
+</style>
+</body>
+
+</html>

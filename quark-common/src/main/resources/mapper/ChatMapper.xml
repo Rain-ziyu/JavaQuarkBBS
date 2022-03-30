@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quark.common.mapper.ChatMapper">
+    <resultMap id="BaseResultMap" type="com.quark.common.entity.Chat">
+        <id column="chatId" jdbcType="VARCHAR" property="chatId"/>
+        <result column="firstUserId" jdbcType="INTEGER" property="firstUserId"/>
+        <result column="secondUserId" jdbcType="INTEGER" property="firstUserId"/>
+    </resultMap>
+    <insert id="creatChat">
+    insert ignore quark_chat_user (chatId,firstUserId,secondUserId)
+    values (#{chatId},#{firstUserId},#{secondUserId})
+    </insert>
+    <select id="selectChat" resultType="com.quark.common.entity.Chat">
+    select chatId,firstUserId,secondUserId from quark_chat_user where firstUserId=#{userId} or secondUserId=#{userId}
+    </select>
+
+
+</mapper>

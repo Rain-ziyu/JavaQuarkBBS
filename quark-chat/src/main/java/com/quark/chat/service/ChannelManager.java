@@ -1,5 +1,7 @@
 package com.quark.chat.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.quark.chat.entity.ChatUser;
 import com.quark.chat.protocol.QuarkChatProtocol;
 import com.quark.chat.utils.BlankUtil;
@@ -30,6 +32,7 @@ public class ChannelManager {
 
     //维护Channel与ChatUser的关系
     private ConcurrentHashMap<Channel,ChatUser> chatUserMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<User,Channel> userChatMap = new ConcurrentHashMap<>();
     private AtomicInteger userCount = new AtomicInteger(0);
 
     /**
@@ -43,6 +46,7 @@ public class ChannelManager {
         chatUser.setAddr(remoteAddr);
         chatUser.setChannel(channel);
         chatUserMap.put(channel,chatUser);
+
     }
 
     /**
@@ -58,6 +62,7 @@ public class ChannelManager {
         if (b==false) return false;
         ChatUser chatUser = chatUserMap.get(channel);
         chatUser.setUser(user);
+        userChatMap.put(user,channel);
         chatUser.setAuth(true);
         chatUser.setTime(System.currentTimeMillis());
 
@@ -77,6 +82,7 @@ public class ChannelManager {
             channel.close();
             ChatUser chatUser= chatUserMap.get(channel);
             if (chatUser!=null){
+                Channel remove = userChatMap.remove(chatUser);
                 ChatUser tmp = chatUserMap.remove(channel);
                 if (tmp != null && tmp.isAuth()) {
                     // 减去一个认证用户
@@ -101,6 +107,28 @@ public class ChannelManager {
                 for (Channel ch : keySet) {
                     ChatUser cUser = chatUserMap.get(ch);
                     if (cUser == null || !cUser.isAuth()) continue;
+//                    将消息发给对应的用户
+                    ch.writeAndFlush(new TextWebSocketFrame(buildmessage));
+                }
+            }finally {
+                rwLock.readLock().unlock();
+            }
+        }
+    }
+    /**
+     * 单播
+     * @param to
+     * @param buildmessage : 经过build的Protocol
+     */
+    public void unicastMessage(User to, String buildmessage){
+        if (!BlankUtil.isBlank(buildmessage)){
+            try {
+                rwLock.readLock().lock();
+                Channel ch = userChatMap.get(to);
+                ChatUser cUser = chatUserMap.get(ch);
+                if (cUser == null || !cUser.isAuth()) {
+                    ch.writeAndFlush(new TextWebSocketFrame("对方暂时不在线"));
+                }else {
 //                    将消息发给对应的用户
                     ch.writeAndFlush(new TextWebSocketFrame(buildmessage));
                 }

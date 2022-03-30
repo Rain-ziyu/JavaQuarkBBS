@@ -1,11 +1,13 @@
 package com.quark.rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,6 +28,15 @@ public class RedisService<T> {
     public void cacheString(String key, T t,int time){
         ValueOperations<String, T> operations = redisTemplate.opsForValue();
         operations.set(key,t,time, TimeUnit.HOURS);
+    }
+    /**
+     * 设置String缓存
+     * @param key
+     * @param t
+     */
+    public void cacheString(String key, T t){
+        ValueOperations<String, T> operations = redisTemplate.opsForValue();
+        operations.set(key,t);
     }
 
     /**
@@ -98,6 +109,45 @@ public class RedisService<T> {
     public boolean setHasValue(String key, T t){
         SetOperations<String,T> opsForSet = redisTemplate.opsForSet();
         return opsForSet.isMember(key, t);
+    }
+
+    /**
+     * 向对应list类型的的key插入新的值
+     * @param key
+     * @param t
+     * @return
+     */
+    public Long setListValue(String key, T t){
+        SetOperations<String,T> opsForSet = redisTemplate.opsForSet();
+        ListOperations opsList = redisTemplate.opsForList();
+        return  opsList.leftPush(key, t);
+    }
+
+    /**
+     * 向对应list类型的的key设置过期时间
+     * @param time
+     * @param key
+     * @return
+     */
+    public Boolean setListTime(String key, int time){
+        return    redisTemplate.boundValueOps(key).expire(time,TimeUnit.MINUTES);
+    }
+
+    /**
+     * 获取对应list类型的的key下的对应区间内的的值
+     * @param key
+     * @return
+     */
+    public List getListValue(String key,int begin,int end){
+        return   redisTemplate.boundListOps(key).range(begin, end);
+    }
+    /**
+     * 获取对应list类型的的key下的对应长度
+     * @param key
+     * @return
+     */
+    public Long getListLength(String key){
+        return   redisTemplate.boundListOps(key).size();
     }
 
 

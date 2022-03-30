@@ -32,12 +32,10 @@ public class LabelController extends BaseController{
     @ApiOperation("获取标签")
     @GetMapping
     public QuarkResult getAllLabel(){
-
         QuarkResult result = restProcessor(() -> {
             List<Label> labels = labelService.findAll();
             return QuarkResult.ok(labels);
         });
-
         return result;
     }
 

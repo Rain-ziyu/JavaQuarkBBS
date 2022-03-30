@@ -1,16 +1,32 @@
 package com.quark.common.dto;
 
+import com.quark.common.entity.User;
+import lombok.Data;
+import lombok.ToString;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * WebSocket通知消息类
- *
- * @Author LHR
  * Create By 2017/9/6
  */
+@ToString
+@Data
 public class SocketMessage implements Serializable{
-
+    private String messageId;
+    private Long alreadyCount;
     private Integer notice;
+    private User from;
+    private Integer to;
+    private String time;
+    public User getFrom() {
+        return from;
+    }
+
+    public void setFrom(User from) {
+        this.from = from;
+    }
 
     private String message;
 
@@ -28,6 +44,9 @@ public class SocketMessage implements Serializable{
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public SocketMessage() {
     }
 
     public SocketMessage(Integer notice, String message) {

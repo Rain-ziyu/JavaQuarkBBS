@@ -182,5 +182,21 @@ public class UserController extends BaseController {
         return result;
     }
 
+    @ApiOperation("根据用户ID获取用户详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户的id", dataType = "int")
+    })
+    @GetMapping("/userInfo/{userid}")
+    public QuarkResult getUserInfoById(@PathVariable("userid") Integer userid){
+        QuarkResult result = restProcessor(() -> {
+            User user = userService.findOne(userid);
+            if (user == null || userid == null) {
+                return QuarkResult.warn("用户不存在");
+            }
+              return QuarkResult.ok(user);
+        });
+        return result;
+    }
+
 
 }
