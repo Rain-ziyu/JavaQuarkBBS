@@ -64,7 +64,7 @@ public class ChatController extends BaseController {
             List<Chat> chats = chatService.selectChatList(user.getId());
             List<ChatReturnParam> charUser = new ArrayList<>();
             for (Chat chat : chats) {
-                Integer another = chat.getAnother(user.getId());
+                 Integer another = chat.getAnother(user.getId());
                  String allKey = GenerateUniqueID.GenerateID(another,user.getId());
                  String key = GenerateUniqueID.GenerateIDNo(user.getId(),another);
                 Integer count = (Integer) redisService.getString("AlreadyChat:"+key);
@@ -76,8 +76,8 @@ public class ChatController extends BaseController {
                     count = 0;
                 }
                 ChatReturnParam chatReturnParam = new ChatReturnParam();
-               chatReturnParam.setUser(userService.findOne(another));
-               chatReturnParam.setCount((int) (listLength-count));
+                chatReturnParam.setUser(userService.findOne(another));
+                chatReturnParam.setCount((int) (listLength-count));
                 charUser.add(chatReturnParam);
             }
             return QuarkResult.ok(charUser);

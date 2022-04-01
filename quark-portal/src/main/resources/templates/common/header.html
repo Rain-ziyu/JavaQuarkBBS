@@ -16,7 +16,7 @@
             </div>
 
             <div class="nav-user">
-                <a class='nav-message layui-icon layui-icon-dialogue' style="font-size: 25px;" href='../chat/touser'></a>
+
             </div>
         </div>
     </div>
@@ -37,6 +37,7 @@
                 if (count != 0) {
                     htm += "<a class='nav-message' href='../user/message' title=''>" + count + "</a>";
                 }
+                htm += "<a class='nav-message layui-icon layui-icon-dialogue' style='font-size: 25px;' href='../chat/touser'></a>"
                 htm += "<a class='avatar' href='/user/home?id=" + data.data.user.id + "'>" +
                     "<img src='" + data.data.user.icon + "'>" +
                     "<cite>" + data.data.user.username + "</cite>" +

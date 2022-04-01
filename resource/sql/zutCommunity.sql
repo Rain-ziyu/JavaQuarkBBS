@@ -3,15 +3,15 @@
 
  Source Server         : tx云
  Source Server Type    : MariaDB
- Source Server Version : 100605
+ Source Server Version : 100328
  Source Host           : yzzy.top:3306
  Source Schema         : zutCommunity
 
  Target Server Type    : MariaDB
- Target Server Version : 100605
+ Target Server Version : 100328
  File Encoding         : 65001
 
- Date: 24/02/2022 09:14:25
+ Date: 01/04/2022 11:36:19
 */
 
 SET NAMES utf8mb4;
@@ -28,15 +28,34 @@ CREATE TABLE `hibernate_sequence`  (
 -- ----------------------------
 -- Records of hibernate_sequence
 -- ----------------------------
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
-INSERT INTO `hibernate_sequence` VALUES (110);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+INSERT INTO `hibernate_sequence` VALUES (111);
+
+-- ----------------------------
+-- Table structure for my_reply
+-- ----------------------------
+DROP TABLE IF EXISTS `my_reply`;
+CREATE TABLE `my_reply`  (
+  `id` int(11) NOT NULL,
+  `content` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `init_time` datetime NULL DEFAULT NULL,
+  `up` int(11) NULL DEFAULT NULL,
+  `hfuser_id` int(11) NULL DEFAULT NULL,
+  `bhfuser_id` int(11) NULL DEFAULT NULL,
+  `reply_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of my_reply
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for quark_adminuser
@@ -45,11 +64,11 @@ DROP TABLE IF EXISTS `quark_adminuser`;
 CREATE TABLE `quark_adminuser`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `enable` int(11) NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `UK_4erqa44qkwwkl539xouso7v4c`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 89 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 89 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_adminuser
@@ -67,13 +86,59 @@ CREATE TABLE `quark_adminuser_role`  (
   INDEX `FK26lllx1jn0c1k8f8oj2qt4io1`(`role_id`) USING BTREE,
   CONSTRAINT `FK26lllx1jn0c1k8f8oj2qt4io1` FOREIGN KEY (`role_id`) REFERENCES `quark_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKatv5o94k3fooskwr53rvqfven` FOREIGN KEY (`adminuser_id`) REFERENCES `quark_adminuser` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_adminuser_role
 -- ----------------------------
 INSERT INTO `quark_adminuser_role` VALUES (88, 1);
 INSERT INTO `quark_adminuser_role` VALUES (88, 6);
+
+-- ----------------------------
+-- Table structure for quark_advertisement
+-- ----------------------------
+DROP TABLE IF EXISTS `quark_advertisement`;
+CREATE TABLE `quark_advertisement`  (
+  `imgUrl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `webPageUrl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `info` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `telephone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `label` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `endDate` datetime NULL DEFAULT NULL,
+  `status` tinyint(4) NULL DEFAULT 0,
+  `advLocation` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `userId` int(255) NULL DEFAULT NULL,
+  `startDate` datetime NULL DEFAULT NULL,
+  `dailyStartTime` time NULL DEFAULT NULL,
+  `dailyEndTime` time NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of quark_advertisement
+-- ----------------------------
+INSERT INTO `quark_advertisement` VALUES ('http://yzzy.top/images/upload/2022-03-31/ae018301-f6a1-437b-add1-2f6e0c82cba8.jpeg', 'th', 'fdh', 'fdgh', '1', '2022-04-21 00:00:00', NULL, 'shanghai', 1, '2022-04-05 00:00:00', '09:54:14', '13:54:16', ';o;j', 1);
+
+-- ----------------------------
+-- Table structure for quark_chat_user
+-- ----------------------------
+DROP TABLE IF EXISTS `quark_chat_user`;
+CREATE TABLE `quark_chat_user`  (
+  `chatId` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `firstUserId` int(11) NULL DEFAULT NULL,
+  `secondUserId` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`chatId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of quark_chat_user
+-- ----------------------------
+INSERT INTO `quark_chat_user` VALUES ('Chat:110:1', 110, 1);
+INSERT INTO `quark_chat_user` VALUES ('Chat:110:95', 110, 95);
+INSERT INTO `quark_chat_user` VALUES ('Chat:143:95', 143, 95);
+INSERT INTO `quark_chat_user` VALUES ('Chat:95:1', 1, 95);
 
 -- ----------------------------
 -- Table structure for quark_collect
@@ -89,7 +154,7 @@ CREATE TABLE `quark_collect`  (
   INDEX `FKg4gtyqabrsuwr5y35lxvjy515`(`user_id`) USING BTREE,
   CONSTRAINT `FK5a8rh83fve6ug3utggpy8wdvi` FOREIGN KEY (`posts_id`) REFERENCES `quark_posts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKg4gtyqabrsuwr5y35lxvjy515` FOREIGN KEY (`user_id`) REFERENCES `quark_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_collect
@@ -101,12 +166,12 @@ CREATE TABLE `quark_collect`  (
 DROP TABLE IF EXISTS `quark_label`;
 CREATE TABLE `quark_label`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `details` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `details` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `posts_count` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `UK_6vml4ba2itmaor84892v92b1f`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 88 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 88 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_label
@@ -139,7 +204,7 @@ CREATE TABLE `quark_notification`  (
   CONSTRAINT `FKac4wjs0b3992ohkf61jy4ilmj` FOREIGN KEY (`fromuser_id`) REFERENCES `quark_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKilg05a7ki3vkv7lfjnn57pdw2` FOREIGN KEY (`posts_id`) REFERENCES `quark_posts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKquscxmtiqggsch7w833ywubux` FOREIGN KEY (`touser_id`) REFERENCES `quark_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 109 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 109 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_notification
@@ -156,13 +221,13 @@ INSERT INTO `quark_notification` VALUES (108, b'0', 1, 106, 95, '2022-02-23 16:1
 DROP TABLE IF EXISTS `quark_permission`;
 CREATE TABLE `quark_permission`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `perurl` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `perurl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `sort` int(11) NULL DEFAULT NULL,
   `type` int(11) NULL DEFAULT NULL,
   `parentid` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_permission
@@ -199,12 +264,12 @@ INSERT INTO `quark_permission` VALUES (28, '修改标签', '/labels/update', 37,
 DROP TABLE IF EXISTS `quark_posts`;
 CREATE TABLE `quark_posts`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `good` bit(1) NOT NULL,
   `init_time` datetime NOT NULL,
   `label_id` int(11) NULL DEFAULT NULL,
   `reply_count` int(11) NULL DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `top` bit(1) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
@@ -213,7 +278,7 @@ CREATE TABLE `quark_posts`  (
   INDEX `FKnxd3qh1m3c0o6tc3ojfa8fm6o`(`label_id`) USING BTREE,
   CONSTRAINT `FK41ebsa5jpn18egdtjo6uiaugn` FOREIGN KEY (`user_id`) REFERENCES `quark_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKnxd3qh1m3c0o6tc3ojfa8fm6o` FOREIGN KEY (`label_id`) REFERENCES `quark_label` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 214 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 214 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_posts
@@ -229,7 +294,7 @@ INSERT INTO `quark_posts` VALUES (109, '<img src=\"http://yzzy.top/images/upload
 DROP TABLE IF EXISTS `quark_reply`;
 CREATE TABLE `quark_reply`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `init_time` datetime NULL DEFAULT NULL,
   `up` int(11) NOT NULL,
   `posts_id` int(11) NOT NULL,
@@ -239,7 +304,7 @@ CREATE TABLE `quark_reply`  (
   INDEX `FKnt12hb9oqfm5eamjpg27bkpvv`(`user_id`) USING BTREE,
   CONSTRAINT `FKnr6a7xtk9rm31ptn6gchi9113` FOREIGN KEY (`posts_id`) REFERENCES `quark_posts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKnt12hb9oqfm5eamjpg27bkpvv` FOREIGN KEY (`user_id`) REFERENCES `quark_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 108 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 108 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_reply
@@ -257,11 +322,11 @@ INSERT INTO `quark_reply` VALUES (107, '<p>多看片，少看书。</p><p>多看
 DROP TABLE IF EXISTS `quark_role`;
 CREATE TABLE `quark_role`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `UK_ff572j64wr6y4taed1c27vfo6`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_role
@@ -280,7 +345,7 @@ CREATE TABLE `quark_role_permission`  (
   INDEX `FKlsdkf5vtsq5qvepw45r0y89jw`(`permissions_id`) USING BTREE,
   CONSTRAINT `FK763ep4ix05naeoliv21sm6m81` FOREIGN KEY (`role_id`) REFERENCES `quark_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKlsdkf5vtsq5qvepw45r0y89jw` FOREIGN KEY (`permissions_id`) REFERENCES `quark_permission` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_role_permission
@@ -320,24 +385,25 @@ INSERT INTO `quark_role_permission` VALUES (6, 17);
 DROP TABLE IF EXISTS `quark_user`;
 CREATE TABLE `quark_user`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `icon` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `enable` int(11) NOT NULL,
   `init_time` datetime NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `sex` int(11) NULL DEFAULT NULL,
-  `signature` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `signature` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `UK_2uqfoo05i1p5qm4ntysj2ivbs`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 97 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 111 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_user
 -- ----------------------------
-INSERT INTO `quark_user` VALUES (1, 'http://yzzy.top/images/upload/2022-02-14/ff8a0436-50e0-4f23-8246-a8dc6ffc6ae9.jpeg', 1, '2022-02-07 14:11:51', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'ziyu', '1874300301@qq.com');
+INSERT INTO `quark_user` VALUES (1, 'http://yzzy.top/images/upload/default.png', 1, '2022-02-07 14:11:51', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'ziyu', '1874300301@qq.com');
 INSERT INTO `quark_user` VALUES (94, 'http://yzzy.top/images/upload/default.png', 1, '2022-02-23 16:02:37', 'c1a5b2c9a2ea32bef984b65e405409e0', 0, NULL, 'aloha', 'w297824@163.com');
 INSERT INTO `quark_user` VALUES (95, 'http://yzzy.top/images/upload/default.png', 1, '2022-02-23 16:02:43', '65a0ec385ca6a0c1e20d1f8270c28303', 0, NULL, '呀呼', '123456789@163.com');
-INSERT INTO `quark_user` VALUES (96, 'http://yzzy.top/images/upload/2022-02-23/ab12a3d0-361b-4bd9-af0a-24c4203d0e67.png', 1, '2022-02-23 16:03:13', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'chen', '294@qq.com');
+INSERT INTO `quark_user` VALUES (96, 'http://yzzy.top/images/upload/default.png', 1, '2022-02-23 16:03:13', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'chen', '294@qq.com');
+INSERT INTO `quark_user` VALUES (110, 'http://yzzy.top/images/upload/default.png', 1, '2022-04-01 11:23:02', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'test', 'test@qq.com');
 
 SET FOREIGN_KEY_CHECKS = 1;

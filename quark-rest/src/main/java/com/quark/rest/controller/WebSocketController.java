@@ -3,6 +3,7 @@ package com.quark.rest.controller;
 import com.quark.common.dto.SocketMessage;
 import com.quark.rest.param.ReturnParam;
 import com.quark.rest.service.RedisService;
+import com.quark.rest.service.impl.WordReplaceServiceImpl;
 import com.quark.rest.utils.GenerateUniqueID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class WebSocketController {
 
     public SimpMessagingTemplate template;
-
+@Autowired
+private WordReplaceServiceImpl wordReplaceService;
     @Autowired
     private RedisService redisService;
 
@@ -59,6 +61,7 @@ public class WebSocketController {
         Long listLength = redisService.getListLength(generateID);
         message.setAlreadyCount(listLength + 1);
         message.setMessageId(generateID);
+        message.setMessage(wordReplaceService.illegalWordsReplace(message.getMessage()));
         template.convertAndSendToUser(message.getTo() + "", "/message", message);
 //        设置缓存，以缓存用户聊天
         redisService.setListValue(generateID, message);

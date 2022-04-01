@@ -50,7 +50,7 @@
                             </div>
 
                             <div class="layui-form-item">
-                                <button class="layui-btn" lay-filter="*" lay-submit>立即注册</button>
+                                <button class="layui-btn" lay-filter="register" onsubmit="return false" lay-submit>立即注册</button>
                             </div>
 
                         </form>
@@ -63,18 +63,11 @@
 </div>
 
 <div th:include="common/footer::footer"></div>
-<script th:src="@{/layui/layui.js}"></script>
-<script th:src="@{/js/jquery-1.11.2.min.js}"></script>
-<script th:src="@{/js/jquery.cookie.js}"></script>
-<script th:src="@{/js/quark_api.js}"></script>
+
 <script>
     layui.use(['form'], function () {
-
-
         var form = layui.form;
-
-
-        form.on('submit(*)', function (data) {
+        form.on("submit(register)", function (data) {
             var password = $("#L_pass").val();
             var repassword = $("#L_repass").val();
             if (password.length>16||password.length<6) {
@@ -85,6 +78,7 @@
                 layer.msg("两次不密码一致",{icon:7});
                 return false;
             }
+            debugger
             $.post(quark_register_api, data.field,
                 function (data) {
                     if (data.status == 200) {
@@ -102,7 +96,6 @@
                         layer.msg(data.error,{icon:5});
                     }
                 }, "json");
-
             return false;
         });
     });
