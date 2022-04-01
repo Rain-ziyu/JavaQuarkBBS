@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quark.common.mapper.UserRankMapper">
+    <resultMap id="BaseResultMap" type="com.quark.common.entity.UserRank">
+        <result column="userId" jdbcType="INTEGER" property="userId"/>
+        <result column="getTime" jdbcType="DATE" property="getTime"/>
+        <association property="userRank" javaType="com.quark.common.entity.Rank">
+            <id column="rankId" jdbcType="INTEGER" property="rankId"/>
+            <result column="description" jdbcType="VARCHAR" property="description"/>
+            <result column="rankName" jdbcType="VARCHAR" property="rankName"/>
+            <result column="userLevel" jdbcType="INTEGER" property="userLevel"/>
+            <result column="userPostsCount" jdbcType="INTEGER" property="userPostsCount"/>
+            <result column="rankUrl" jdbcType="VARCHAR" property="rankUrl"/>
+        </association>
+    </resultMap>
+    <insert id="saveUserRank">
+        insert ignore quark_userRank (userId, userRank)
+        values (#{userId}, #{userRank.rankId})
+    </insert>
+    <select id="selectUserRankByUserId" resultMap="BaseResultMap">
+        select userId,getTime,rankId,description,rankName,userLevel,userPostsCount,rankUrl
+        from quark_userRank
+                 left join quark_rank on (quark_rank.rankId = quark_userRank.userRank)
+        where quark_userRank.userId = #{userId}
+    </select>
+
+
+</mapper>

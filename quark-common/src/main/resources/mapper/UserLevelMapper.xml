@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quark.common.mapper.UserLevelMapper">
+    <resultMap id="BaseResultMap" type="com.quark.common.entity.UserLevel">
+        <id column="userId" jdbcType="INTEGER" property="userId"/>
+        <result column="userLevel" jdbcType="INTEGER" property="userLevel"/>
+        <result column="useingRank" jdbcType="INTEGER" property="useingRank"/>
+        <result column="lastLoginTime" jdbcType="DATE" property="lastLoginTime"/>
+        <association property="useingRank" javaType="com.quark.common.entity.Rank">
+            <id property="rankId" column="rankId"/>
+            <result property="rankUrl" column="rankUrl"/>
+        </association>
+    </resultMap>
+    <insert id="insertUserLevel">
+        insert into quark_userlevel (userId, userExp, userLevel, useingRank, rankUrl, lastLoginTime)
+        values (#{userId}, #{userExp}, #{userLevel}, #{useingRank.rankId}, #{useingRank.rankUrl}, #{lastLoginTime})
+    </insert>
+    <update id="updateUserLevelByUserId">
+        update quark_userlevel
+        set userExp=#{userExp},
+            userLevel=#{userLevel},
+            useingRank =#{useingRank.rankId},
+            rankUrl=#{useingRank.rankUrl},
+            lastLoginTime=#{lastLoginTime}
+        where userId = #{userId}
+    </update>
+    <select id="selectUserLevelByUserId" resultMap="BaseResultMap">
+        select userId, userExp, userLevel, useingRank as rankId, rankUrl, lastLoginTime
+        from quark_userlevel
+        where userId = #{userId}
+    </select>
+    <select id="selectAllUserLevel" resultMap="BaseResultMap">
+        select userId, userExp, userLevel, useingRank as rankId, rankUrl, lastLoginTime
+        from quark_userlevel
+    </select>
+</mapper>

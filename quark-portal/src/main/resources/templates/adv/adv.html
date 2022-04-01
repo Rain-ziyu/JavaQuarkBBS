@@ -78,8 +78,7 @@
             <el-input type="textarea" v-model="form.info"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit">立即创建</el-button>
-            <el-button>取消</el-button>
+            <el-button type="primary" @click="onSubmit">发送申请</el-button>
         </el-form-item>
     </el-form>
 </div>
@@ -197,6 +196,7 @@
                     },
                     token: getCookie()
                 }
+                let that = this
                 $.ajax({
                     type: 'PUT',
                     url: quark_adv_add_api,
@@ -206,10 +206,24 @@
                     async: false,
                     success: function (data) {
                         debugger
+                        that.$alert('你将会回退到上一个标签页', '申请成功', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                                that.$message({
+                                    type: 'info',
+                                    message: `action: ${ action }`
+                                });
+                                //发送成功后浏览器回退至上一标签页
+                                history.go(-1)
+                            }
+
+                        });
+
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                     }
                 })
+
             }
         }
 

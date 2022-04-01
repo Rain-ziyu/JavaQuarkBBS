@@ -11,7 +11,7 @@
  Target Server Version : 100328
  File Encoding         : 65001
 
- Date: 01/04/2022 11:36:19
+ Date: 01/04/2022 15:37:08
 */
 
 SET NAMES utf8mb4;
@@ -114,12 +114,15 @@ CREATE TABLE `quark_advertisement`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of quark_advertisement
 -- ----------------------------
 INSERT INTO `quark_advertisement` VALUES ('http://yzzy.top/images/upload/2022-03-31/ae018301-f6a1-437b-add1-2f6e0c82cba8.jpeg', 'th', 'fdh', 'fdgh', '1', '2022-04-21 00:00:00', NULL, 'shanghai', 1, '2022-04-05 00:00:00', '09:54:14', '13:54:16', ';o;j', 1);
+INSERT INTO `quark_advertisement` VALUES ('http://yzzy.top/images/upload/2022-04-01/5a75852d-b194-45fb-a9d0-da035daa732a.jpeg', 'dgf', 'dg', 'dg', '1', '2022-05-18 00:00:00', NULL, 'shanghai', 110, '2022-04-04 00:00:00', '13:28:43', '16:28:46', 'test', 2);
+INSERT INTO `quark_advertisement` VALUES ('http://yzzy.top/images/upload/2022-04-01/5a75852d-b194-45fb-a9d0-da035daa732a.jpeg', 'dgf', 'dg', 'dg', '1', '2022-05-18 00:00:00', NULL, 'shanghai', 110, '2022-04-04 00:00:00', '13:28:43', '16:28:46', 'test', 3);
+INSERT INTO `quark_advertisement` VALUES ('http://yzzy.top/images/upload/2022-04-01/ee6aec98-d822-4ea8-94c6-303605e22657.jpeg', 'as', 'as', 'as', '1', '2022-05-23 00:00:00', NULL, 'shanghai', 110, '2022-04-11 00:00:00', '14:31:14', '15:31:16', 'test', 4);
 
 -- ----------------------------
 -- Table structure for quark_chat_user
@@ -289,6 +292,24 @@ INSERT INTO `quark_posts` VALUES (106, '说出你的想法', b'0', '2022-02-23 1
 INSERT INTO `quark_posts` VALUES (109, '<img src=\"http://yzzy.top/images/upload/2022-02-23/71f6dbec-db58-441c-833a-a60e56b75367.jpeg\" alt=\"null\">', b'0', '2022-02-23 16:14:24', 1, 0, '大家都多少分啊，也没个人说（Http状态码）', b'0', 1);
 
 -- ----------------------------
+-- Table structure for quark_rank
+-- ----------------------------
+DROP TABLE IF EXISTS `quark_rank`;
+CREATE TABLE `quark_rank`  (
+  `rankId` int(11) NOT NULL COMMENT '头衔id',
+  `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL COMMENT '头衔获取描述',
+  `rankName` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL COMMENT '头衔名称',
+  `userLevel` int(11) NULL DEFAULT 0 COMMENT '获取头衔需要的等级：没有等级要求-1',
+  `userPostsCount` int(11) NULL DEFAULT 0 COMMENT '获取头衔所需的发帖数量：没有该要求-1',
+  `rankUrl` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '0' COMMENT '头衔样式及url',
+  PRIMARY KEY (`rankId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of quark_rank
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for quark_reply
 -- ----------------------------
 DROP TABLE IF EXISTS `quark_reply`;
@@ -405,5 +426,38 @@ INSERT INTO `quark_user` VALUES (94, 'http://yzzy.top/images/upload/default.png'
 INSERT INTO `quark_user` VALUES (95, 'http://yzzy.top/images/upload/default.png', 1, '2022-02-23 16:02:43', '65a0ec385ca6a0c1e20d1f8270c28303', 0, NULL, '呀呼', '123456789@163.com');
 INSERT INTO `quark_user` VALUES (96, 'http://yzzy.top/images/upload/default.png', 1, '2022-02-23 16:03:13', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'chen', '294@qq.com');
 INSERT INTO `quark_user` VALUES (110, 'http://yzzy.top/images/upload/default.png', 1, '2022-04-01 11:23:02', 'e10adc3949ba59abbe56e057f20f883e', 0, NULL, 'test', 'test@qq.com');
+
+-- ----------------------------
+-- Table structure for quark_userLevel
+-- ----------------------------
+DROP TABLE IF EXISTS `quark_userLevel`;
+CREATE TABLE `quark_userLevel`  (
+  `userId` int(11) NOT NULL,
+  `userExp` int(11) NULL DEFAULT 0,
+  `userLevel` int(11) NULL DEFAULT NULL,
+  `useingRank` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `rankUrl` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `lastLoginTime` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`userId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of quark_userLevel
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for quark_userRank
+-- ----------------------------
+DROP TABLE IF EXISTS `quark_userRank`;
+CREATE TABLE `quark_userRank`  (
+  `userId` int(11) NOT NULL,
+  `userRank` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `getTime` datetime NULL DEFAULT NULL,
+  INDEX `userId`(`userId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of quark_userRank
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
