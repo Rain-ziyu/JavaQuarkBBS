@@ -4,11 +4,14 @@ import com.quark.rest.words.IllegalWordsSearch;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -24,8 +27,8 @@ public class WordReplaceServiceImpl {
     @Autowired
     private IllegalWordsSearch illegalWordsSearch;
     @Bean
-    public IllegalWordsSearch loadKeyWord() throws IOException {
-        List<String> strings = loadKeywords(Paths.get("D:\\ToolGood.Words\\java\\toolgood.words\\src\\main\\resources\\sensitiveWords"));
+    public IllegalWordsSearch loadKeyWord() throws IOException, URISyntaxException {
+        List<String> strings = loadKeywords(Paths.get("/opt/tmp/sensitiveWords"));
         log.info("load关键词成功");
         IllegalWordsSearch illegalWordsSearch = new IllegalWordsSearch();
         illegalWordsSearch.SetKeywords(strings);

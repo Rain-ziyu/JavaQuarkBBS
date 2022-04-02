@@ -14,4 +14,11 @@ public class Rank {
     private Integer userLevel;
     private Integer userPostsCount;
     private String rankUrl;
+    public static Rank getDefaultRank(){
+        Rank rank = new Rank();
+        rank.setRankId(1);
+        rank.setRankName("萌新新");
+        rank.setRankUrl("url");
+        return rank;
+    }
 }

@@ -43,7 +43,7 @@ public interface UserService extends BaseService<User> {
      * @param username
      * @param password
      */
-    void createUser(String email,String username,String password);
+    Integer createUser(String email,String username,String password);
 
     /**
      * 用户登录

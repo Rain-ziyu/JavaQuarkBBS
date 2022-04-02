@@ -4,33 +4,49 @@
     <resultMap id="BaseResultMap" type="com.quark.common.entity.UserLevel">
         <id column="userId" jdbcType="INTEGER" property="userId"/>
         <result column="userLevel" jdbcType="INTEGER" property="userLevel"/>
-        <result column="useingRank" jdbcType="INTEGER" property="useingRank"/>
         <result column="lastLoginTime" jdbcType="DATE" property="lastLoginTime"/>
+        <result column="userExp" jdbcType="INTEGER" property="userExp"/>
         <association property="useingRank" javaType="com.quark.common.entity.Rank">
             <id property="rankId" column="rankId"/>
             <result property="rankUrl" column="rankUrl"/>
         </association>
     </resultMap>
     <insert id="insertUserLevel">
-        insert into quark_userlevel (userId, userExp, userLevel, useingRank, rankUrl, lastLoginTime)
-        values (#{userId}, #{userExp}, #{userLevel}, #{useingRank.rankId}, #{useingRank.rankUrl}, #{lastLoginTime})
+        insert into quark_userLevel (userId,  useingRank, rankUrl, lastLoginTime)
+        values (#{userId},#{useingRank.rankId}, #{useingRank.rankUrl}, #{lastLoginTime})
     </insert>
     <update id="updateUserLevelByUserId">
-        update quark_userlevel
-        set userExp=#{userExp},
+        update quark_userLevel
+        set
+        <trim suffixOverrides=",">
+        <if test="userExp!=null">
+            userExp=#{userExp},
+        </if>
+        <if test="userLevel!=null">
             userLevel=#{userLevel},
+        </if>
+
+        <if test="useingRank!=null">
             useingRank =#{useingRank.rankId},
+        </if>
+
+        <if test="useingRank!=null">
             rankUrl=#{useingRank.rankUrl},
-            lastLoginTime=#{lastLoginTime}
+        </if>
+
+        <if test="lastLoginTime!=null">
+            lastLoginTime=#{lastLoginTime},
+        </if>
+        </trim>
         where userId = #{userId}
     </update>
     <select id="selectUserLevelByUserId" resultMap="BaseResultMap">
         select userId, userExp, userLevel, useingRank as rankId, rankUrl, lastLoginTime
-        from quark_userlevel
+        from quark_userLevel
         where userId = #{userId}
     </select>
     <select id="selectAllUserLevel" resultMap="BaseResultMap">
         select userId, userExp, userLevel, useingRank as rankId, rankUrl, lastLoginTime
-        from quark_userlevel
+        from quark_userLevel
     </select>
 </mapper>

@@ -4,8 +4,10 @@ import com.quark.common.base.BaseController;
 import com.quark.common.dto.QuarkResult;
 import com.quark.common.entity.Posts;
 import com.quark.common.entity.User;
+import com.quark.common.entity.UserLevel;
 import com.quark.rest.service.NotificationService;
 import com.quark.rest.service.PostsService;
+import com.quark.rest.service.UserLevelService;
 import com.quark.rest.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class UserController extends BaseController {
 
     @Autowired
     private PostsService postsService;
+    @Autowired
+    private UserLevelService userLevelService;
 
     @Autowired
     private NotificationService notificationService;
@@ -52,9 +57,11 @@ public class UserController extends BaseController {
             if (!userService.checkUserEmail(email))
                 return QuarkResult.warn("用户邮箱已存在，请重新输入");
 
-            else
-                userService.createUser(email,username,password);
-
+            else {
+                Integer userId = userService.createUser(email, username, password);
+//              创建时更新用户等级信息
+                userLevelService.insertUserLevel(userId);
+            }
             return QuarkResult.ok();
 
         });
@@ -68,7 +75,6 @@ public class UserController extends BaseController {
     })
     @PostMapping("/login")
     public QuarkResult Login(String email,String password) {
-
         QuarkResult result = restProcessor(() -> {
             User loginUser = userService.findByEmail(email);
             if (loginUser == null)
@@ -76,6 +82,8 @@ public class UserController extends BaseController {
             if (!loginUser.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes())))
                 return QuarkResult.warn("用户密码错误，请重新输入");
             String token = userService.LoginUser(loginUser);
+//            登陆时在userLevel表留下登陆时间
+            userLevelService.updateUserLoginTime(loginUser.getId());
             return QuarkResult.ok(token);
         });
         return result;

@@ -14,14 +14,19 @@
         </association>
     </resultMap>
     <insert id="saveUserRank">
-        insert ignore quark_userRank (userId, userRank)
-        values (#{userId}, #{userRank.rankId})
+        insert ignore quark_userRank (userId, userRank,getTime)
+        values (#{userId}, #{userRank.rankId},now())
     </insert>
-    <select id="selectUserRankByUserId" resultMap="BaseResultMap">
+    <select id="selectNowUserRankByUserId" resultMap="BaseResultMap">
         select userId,getTime,rankId,description,rankName,userLevel,userPostsCount,rankUrl
         from quark_userRank
                  left join quark_rank on (quark_rank.rankId = quark_userRank.userRank)
         where quark_userRank.userId = #{userId}
+    </select>
+    <select id="selectRankByUserId" resultMap="BaseResultMap">
+        select rankId, description, rankName, userLevel, userPostsCount, rankUrl,userId
+        from view_quark_userRank
+        where userID = #{userID}
     </select>
 
 

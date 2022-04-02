@@ -58,13 +58,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserDao, User> implements U
     }
 
     @Override
-    public void createUser(String email, String username, String password) {
+    public Integer createUser(String email, String username, String password) {
         User user = new User();
         user.setEmail(email);
         user.setUsername(username);
         user.setInitTime(new Date());
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-        repository.save(user);
+        return   repository.save(user).getId();
     }
 
     @Override

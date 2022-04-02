@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.quark.common.base.BaseController;
 import com.quark.common.dto.QuarkResult;
 import com.quark.common.entity.*;
-import com.quark.rest.service.LabelService;
-import com.quark.rest.service.PostsService;
-import com.quark.rest.service.ReplyService;
-import com.quark.rest.service.UserService;
+import com.quark.rest.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,6 +37,8 @@ public class PostsController extends BaseController {
 
     @Autowired
     private ReplyService replyService;
+    @Autowired
+    private UserLevelService userLevelService;
 
     @ApiOperation("发帖接口")
     @ApiImplicitParams({
@@ -61,9 +60,10 @@ public class PostsController extends BaseController {
             if (user.getEnable() != 1) return QuarkResult.warn("用户处于封禁状态！");
 
             postsService.savePosts(posts, labelId, user);
+//            用户发帖时经验的获取
+            userLevelService.userSendPosts(user.getId());
             return QuarkResult.ok();
         });
-
         return result;
     }
 

@@ -11,8 +11,8 @@ import java.util.List;
 @Mapper
 public interface RankMapper {
     public void createRank(Rank rank);
-    public List<Rank> selectRankByUserId(Integer userId);
+
     public List<Rank> selectRankByRankId(Integer rankId);
     public List<Rank> selectAllRank();
-    public void updateAdv(Rank rank);
+    public void updateRank(Rank rank);
 }

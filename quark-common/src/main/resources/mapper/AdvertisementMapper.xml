@@ -16,21 +16,79 @@
         </association>
     </resultMap>
     <insert id="saveAdv">
-        insert into quark_advertisement (imgUrl,webPageUrl,info,telephone,label,endDate,status,advLocation,userId,startDate,dailyStartTime,dailyEndTime,name)
-        values (#{imgUrl},#{webPageUrl},#{info},#{telephone},#{label.id},#{endDate},#{status},#{advLocation},#{userId},#{startDate},#{dailyStartTime},#{dailyEndTime},#{name})
+        insert into quark_advertisement (imgUrl, webPageUrl, info, telephone, label, endDate, status, advLocation,
+                                         userId, startDate, dailyStartTime, dailyEndTime, name)
+        values (#{imgUrl}, #{webPageUrl}, #{info}, #{telephone}, #{label.id}, #{endDate}, #{status}, #{advLocation},
+                #{userId}, #{startDate}, #{dailyStartTime}, #{dailyEndTime}, #{name})
     </insert>
     <update id="updateAdv">
-        update quark_advertisement set name=#{name},dailyEndTime=#{dailyEndTime},dailyStartTime=#{dailyStartTime},startDate={startDate}, imgUrl=#{imgUrl},webPageUrl=#{webPageUrl},info = #{info},telephone = #{telephone},label=#{label.id},endDate=#{endDate},status=#{status},advLocation=#{advLocation}
-         where id=#{id}
+        update quark_advertisement
+        set name=#{name},
+            dailyEndTime=#{dailyEndTime},
+            dailyStartTime=#{dailyStartTime},
+            startDate=#{startDate},
+            imgUrl=#{imgUrl},
+            webPageUrl=#{webPageUrl},
+            info = #{info},
+            telephone = #{telephone},
+            label=#{label.id},
+            endDate=#{endDate},
+            status=#{status},
+            advLocation=#{advLocation}
+        where id = #{id}
     </update>
     <select id="getAdvList" resultMap="BaseResultMap">
-        select imgUrl,webPageUrl,info,telephone,label,endDate,status,advLocation,userId,label,startDate,dailyStartTime,dailyEndTime,name from quark_advertisement
+        select imgUrl,
+               webPageUrl,
+               info,
+               telephone,
+               label,
+               endDate,
+               status,
+               advLocation,
+               userId,
+               label,
+               startDate,
+               dailyStartTime,
+               dailyEndTime,
+               name
+        from quark_advertisement
     </select>
     <select id="getAdvListByLabel" resultMap="BaseResultMap">
-        select imgUrl,webPageUrl,info,telephone,label,endDate,status,advLocation,userId,label,startDate,dailyStartTime,dailyEndTime,name from quark_advertisement where label = #{label}
+        select imgUrl,
+               webPageUrl,
+               info,
+               telephone,
+               label,
+               endDate,
+               status,
+               advLocation,
+               userId,
+               label,
+               startDate,
+               dailyStartTime,
+               dailyEndTime,
+               name
+        from quark_advertisement
+        where label = #{label}
     </select>
     <select id="getAdvListByUserId" resultType="com.quark.common.entity.Advertisement">
-        select imgUrl,webPageUrl,info,telephone,label,endDate,status,advLocation,userId,label,startDate,dailyStartTime,dailyEndTime,name from quark_advertisement where userId = #{userId}
+        select imgUrl,
+               webPageUrl,
+               info,
+               telephone,
+               label,
+               endDate,
+               status,
+               advLocation,
+               userId,
+               label,
+               startDate,
+               dailyStartTime,
+               dailyEndTime,
+               name
+        from quark_advertisement
+        where userId = #{userId}
     </select>
 
 

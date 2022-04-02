@@ -1,8 +1,10 @@
 package com.quark.rest;
 
+import com.quark.rest.service.impl.WordReplaceServiceImpl;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -42,7 +44,10 @@ public class student implements Cloneable {
     protected student clone() throws CloneNotSupportedException {
         return (student) super.clone();
     }
-
-
+@Test
+public void word() throws IOException, URISyntaxException {
+    WordReplaceServiceImpl wordReplaceService = new WordReplaceServiceImpl();
+    wordReplaceService.loadKeyWord();
+}
 
 }

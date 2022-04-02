@@ -10,21 +10,44 @@
         <result column="rankUrl" jdbcType="VARCHAR" property="rankUrl"/>
     </resultMap>
     <insert id="createRank">
-        insert into quark_rank (rankId,description,rankName,userLevel,userPostsCount,rankUrl)
-        values (#{rankId},#{description},#{rankName},#{userLevel},#{userPostsCount},#{rankUrl})
+        insert into quark_rank (rankId, description, rankName, userLevel, userPostsCount, rankUrl)
+        values (#{rankId}, #{description}, #{rankName}, #{userLevel}, #{userPostsCount}, #{rankUrl})
     </insert>
-    <update id="updateAdv">
-        update quark_rank set rankId=#{rankId},description=#{description},rankName=#{rankName},userLevel=#{userLevel},userPostsCount=#{userPostsCount},rankUrl=#{rankUrl}
-         where rankId=#{rankId}
+    <update id="updateRank">
+        update quark_rank
+        set
+        <trim suffixOverrides=",">
+            <if test="description != null">
+                description=#{description},
+            </if>
+
+            <if test="rankName!=null">
+                rankName=#{rankName},
+            </if>
+
+            <if test="userLevel!=null">
+                userLevel=#{userLevel},
+            </if>
+
+            <if test="userPostsCount!=null">
+                userPostsCount=#{userPostsCount},
+            </if>
+
+            <if test="rankUrl!=null">
+                rankUrl=#{rankUrl},
+            </if>
+        </trim>
+        where rankId = #{rankId}
     </update>
-    <select id="selectRankByUserId" resultMap="BaseResultMap">
-        select rankId,description,rankName,userLevel,userPostsCount,rankUrl from view_quark_userRank where  userID = #{userID}
-    </select>
+
     <select id="selectAllRank" resultMap="BaseResultMap">
-        select rankId,description,rankName,userLevel,userPostsCount,rankUrl from quark_rank
+        select rankId, description, rankName, userLevel, userPostsCount, rankUrl
+        from quark_rank
     </select>
-    <select id="selectRankByRankId" resultType="com.quark.common.entity.Rank">
-        select rankId,description,rankName,userLevel,userPostsCount,rankUrl from quark_rank where rankId = #{rankId}
+    <select id="selectRankByRankId" resultMap="BaseResultMap">
+        select rankId, description, rankName, userLevel, userPostsCount, rankUrl
+        from quark_rank
+        where rankId = #{rankId}
     </select>
 
 

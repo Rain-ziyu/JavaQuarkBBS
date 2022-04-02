@@ -14,4 +14,13 @@ public class UserLevel {
     private Integer userLevel;
     private Rank useingRank;
     private Date lastLoginTime;
+
+    public void setUserExp(Integer userExp) {
+        this.userExp = userExp;
+        this.userLevel = GetUserLevel(userExp);
+    }
+
+    private Integer GetUserLevel(Integer userExp) {
+    return userExp/10;
+    }
 }
