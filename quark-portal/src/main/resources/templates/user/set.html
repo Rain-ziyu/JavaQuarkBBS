@@ -2,8 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <script language="JavaScript"
-            src="<%=request.getContextPath()%>/webjars/layui/2.2.5/layui.all.js"></script>
     <title>设置资料</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
@@ -22,14 +20,14 @@
                     <div class="layui-form-item">
                         <label for="L_username" class="layui-form-label">昵称</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="" class="layui-input">
+                            <input type="text" id="L_username" name="username"   value="" class="layui-input">
                         </div>
 
                     </div>
                     <div class="layui-form-item">
                         <label for="L_sex" class="layui-form-label">性别</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="L_sex" name="sex" autocomplete="off" value="" class="layui-input">
+                            <input type="text" id="L_sex" name="sex"  value="" class="layui-input">
                         </div>
                         <div class="layui-form-mid layui-word-aux">请填入男/女</div>
                     </div>
@@ -37,7 +35,7 @@
                     <div class="layui-form-item layui-form-text">
                         <label for="L_sign" class="layui-form-label">签名</label>
                         <div class="layui-input-block">
-                            <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="signature" autocomplete="off" class="layui-textarea" style="height: 80px;"></textarea>
+                            <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="signature"  class="layui-textarea" style="height: 80px;"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -63,11 +61,15 @@
 //           layer.alert(data.field.username)
 
             var sex = data.field.sex;
+            debugger
             if (sex =="男"){
                 sexnumber =0;
             }else if(sex=="女"){
                 sexnumber =1;
-            }else{
+            }
+            else if(sex==""){
+            }
+            else{
                 layer.msg("性别输入错误",{icon:7});
                 return false;
             };

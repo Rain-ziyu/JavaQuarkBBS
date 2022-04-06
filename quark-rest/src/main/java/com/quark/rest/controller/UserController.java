@@ -133,12 +133,13 @@ public class UserController extends BaseController {
     @PutMapping("/{token}")
     public QuarkResult updateUser(@PathVariable("token") String token,String username,String signature,Integer sex){
         QuarkResult result = restProcessor(() -> {
+            if(username!=""){
             if (!userService.checkUserName(username)) return QuarkResult.warn("用户名重复！");
-            if (sex != 0 && sex != 1) return QuarkResult.warn("性别输入错误！");
+            }
+            if (sex==null||(sex != 0 && sex != 1)) return QuarkResult.warn("性别输入错误！");
             userService.updateUser(token, username, signature, sex);
             return QuarkResult.ok();
         });
-
         return result;
     }
 

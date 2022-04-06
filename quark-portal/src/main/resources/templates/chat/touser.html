@@ -164,7 +164,7 @@
                 for (let i = 0; i < data.data.length; i++) {
                     let msg = data.data[i];
                     var htmlData = '<div class="msg_item fn-clear">'
-                        + '<div class="uface"><a href="user/home?id=' + app.toUser.id + '" target="view_window"><img src="' + app.toUser.icon + '" width="40" height="40"  alt=""/></a></div>'
+                        + '<div class="uface"><a href="user/home?id=' + msg.from.id + '" target="view_window"><img src="' + msg.from.icon + '" width="40" height="40"  alt=""/></a></div>'
                         + '<div class="item_right">'
                         + '<div class="msg own">' + msg.message.toString() + '</div>'
                         + '<div class="name_time">' + msg.from.username + ' · ' + msg.time + '</div>'

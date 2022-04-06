@@ -1,5 +1,5 @@
 /*链接*/
-var hosts = "yzzy.top:8081";
+var hosts = "localhost:8081";
 var quark_login_api = "http://"+hosts+"/user/login";
 var quark_getUser_api = "http://"+hosts+"/user/message/";
 var quark_logout_api = "http://"+hosts+"/user/logout";
@@ -29,6 +29,7 @@ var quark_webSocket_api = "http://"+hosts+"/quarkServer";
 var quark_notification_api="http://"+hosts+"/notification/";
 var quark_adv_getList_api="http://"+hosts+"/adv";
 var quark_adv_add_api="http://"+hosts+"/adv";
+var quark_rereply_add_api="http://"+hosts+"/reply/rereply";
 var quark_adv_getByUser_api="http://"+hosts+"/adv/getById";
 var quark_chat_webSocket_api = "ws://124.222.44.157:8083/websocket";
 function setCookie(data) {

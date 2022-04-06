@@ -95,9 +95,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserDao, User> implements U
         User cacheuser = redisService.getString(REDIS_USER_KEY + token);
         if (cacheuser == null) throw new ServiceProcessException("session过期,请重新登录");
         User user = repository.getOne(cacheuser.getId());
+        if(username!=""){
         user.setUsername(username);
+        }
+        if(signature!=null){
         user.setSex(sex);
+        }
+        if(sex!=null){
         user.setSignature(signature);
+        }
         repository.save(user);
         redisService.cacheString(REDIS_USER_KEY + token, user, REDIS_USER_TIME);
     }
