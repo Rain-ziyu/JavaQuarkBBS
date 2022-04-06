@@ -15,9 +15,14 @@
 
 <div th:include="common/header::header"></div>
 <script id="user" type="text/html">
-<div class="fly-home">
-    <img src="{{d.data.user.icon}}" alt="">
-
+<div class="fly-home" style="position:relative">
+    <img src="{{d.data.user.icon}}" alt=""/>
+<!--    头像框效果，之后配合等级使用-->
+    <img src="http://yzzy.top/images/upload/webp/b9eba4944ec9c2d2f7d60f38f90b4487136832ff.png@360w_360h.webp" style="    position: absolute;
+    width: 200px;
+    height: 200px;
+    left: 852px;
+    top: -10px;" alt=""/>
     <h1>
         {{d.data.user.username}}
         {{ d.data.user.sex == 0 ? ' <i class="iconfont icon-nan"></i>' : ''}}
