@@ -77,7 +77,7 @@ public class UserLevelServiceImpl implements UserLevelService {
         UserLevel userLevelByUserId = getUserLevelByUserId(userId);
         UserLevel userLevel = new UserLevel();
         userLevel.setUserId(userId);
-//        每次获得5经验
+//        每次获得6经验
         userLevel.setUserExp(userLevelByUserId.getUserExp()+6);
         userLevelMapper.updateUserLevelByUserId(userLevel);
         userRankService.updateUserRank(userId);

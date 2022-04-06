@@ -183,9 +183,11 @@ public class UserController extends BaseController {
             User user = userService.findOne(userid);
             if (user == null || userid == null) return QuarkResult.warn("用户不存在");
             List<Posts> postss = postsService.getPostsByUser(user);
+            UserLevel userLevelByUserId = userLevelService.getUserLevelByUserId(user.getId());
             HashMap<String, Object> map = new HashMap<>();
             map.put("posts",postss);
             map.put("user",user);
+            map.put("userLevel",userLevelByUserId);
             return QuarkResult.ok(map);
         });
         return result;

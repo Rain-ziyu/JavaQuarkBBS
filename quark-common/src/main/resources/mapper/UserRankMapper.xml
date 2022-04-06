@@ -24,9 +24,9 @@
         where quark_userRank.userId = #{userId}
     </select>
     <select id="selectRankByUserId" resultMap="BaseResultMap">
-        select rankId, description, rankName, userLevel, userPostsCount, rankUrl,userId
+        select userId,rankId, description, rankName, userLevel, userPostsCount, rankUrl
         from view_quark_userRank
-        where userID = #{userID}
+        where userID = #{userId}
     </select>
 
 
