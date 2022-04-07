@@ -7,7 +7,10 @@ import com.quark.common.dao.UserDao;
 
 import com.quark.common.entity.Collect;
 import com.quark.common.entity.User;
+import com.quark.common.entity.UserRank;
 import com.quark.common.mapper.CollectMapper;
+import com.quark.common.mapper.UserLevelMapper;
+import com.quark.common.mapper.UserRankMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,8 @@ private CollectMapper collectMapper;
 
     @Autowired
     private NotificationDao notificationDao;
-
+@Autowired
+private UserRankMapper userRankMapper;
     @Test
     public void TestDataSource(){
 //        long count = notificationDao.getNotificationCount(72);
@@ -54,9 +58,7 @@ private CollectMapper collectMapper;
 //        list.forEach(t->{
 //            System.out.println(t.getPosts().getTitle());
 //        });
-        User  user = new User();
-        user.setId(1);
-        List<Collect> collectListByUserId = collectMapper.getCollectListByUserId(user);
-        log.info(collectListByUserId.toString());
+        List<UserRank> userRanks = userRankMapper.selectNowUserRankByUserId(1);
+        log.info(String.valueOf(userRanks));
     }
 }
