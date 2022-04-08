@@ -31,7 +31,11 @@ var quark_adv_getList_api="http://"+hosts+"/adv";
 var quark_adv_add_api="http://"+hosts+"/adv";
 var quark_rereply_add_api="http://"+hosts+"/reply/rereply";
 var quark_adv_getByUser_api="http://"+hosts+"/adv/getById";
+var quark_title_getAll_api = "http://"+hosts+"/title/all";
+var quark_title_getByUser_api = "http://"+hosts+"/title";
+var quark_title_wear_api = "http://"+hosts+"/title";
 var quark_chat_webSocket_api = "ws://124.222.44.157:8083/websocket";
+
 function setCookie(data) {
     var expiresDate= new Date();
     expiresDate.setTime(expiresDate.getTime() + (60 * 60 * 1000));

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>个人空间</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+
+<div th:include="common/header::header"></div>
+<div class="main fly-user-main layui-clear" id="app">
+    <ul th:include="common/set::set" class="layui-nav layui-nav-tree layui-inline" lay-filter="user"></ul>
+    <el-row style="left: 110px">
+        <el-col :span="8" v-for="(o, index) in showInfo" :key="o" :offset="index %2== 0 ? 2 : 0">
+            <el-card :body-style="{ padding: '0px' }">
+                <img :src="'http://yzzy.top/images/upload/webp/'+o.rankUrl" class="image"
+                     :class="o.show==null?'':'gray'">
+                <div style="padding: 14px;">
+                    <span>{{o.rankName}}</span>
+                    <div class="bottom clearfix">
+                        <time class="description">{{ o.description }}</time>
+                        <el-button type="text" class="button" @click="wear(o)" v-if="o.show==null">佩戴</el-button>
+                    </div>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+    <div class="paginationClass" >
+        <el-pagination
+                background
+                :current-page="currentPage"
+                layout="prev, pager, next"
+                @current-change="handleCurrentChange"
+                :page-size="1"
+                :total="total"
+                style="margin-left: 200px">
+        </el-pagination>
+    </div>
+</div>
+
+
+<style>
+    .description {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .gray {
+        -webkit-filter: grayscale(100%);
+        -moz-filter: grayscale(100%);
+
+        -o-filter: grayscale(100%);
+        filter: grayscale(100%);
+
+    }
+
+    .bottom {
+        margin-top: 13px;
+        line-height: 12px;
+    }
+
+    .button {
+        padding: 0;
+        float: right;
+    }
+
+    .image {
+        width: 100%;
+        /*防止图片大小不一致影响对其*/
+        height: 370px;
+        display: block;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+</style>
+
+<div th:include="common/footer::footer"></div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            currentPage: 1,
+            total: 0
+        },
+        computed: {
+            showInfo() {
+                let info;
+                let that = this;
+                $.ajaxSettings.async = false;
+                $.get(quark_title_getAll_api + "?current=" + this.currentPage, function (data) {
+                    debugger
+                    info = data.data.records;
+                    that.total = data.data.pages;
+                })
+                let nowRank;
+                $.get(quark_title_getByUser_api + "?token=" + getCookie(), function (data) {
+                    debugger
+                    nowRank = data.data.userRank;
+                })
+                for (let i = 0; i < info.length; i++) {
+                    if (!isInArray(nowRank, info[i].rankId)) {
+                        info[i].show = false;
+                    }
+                }
+                return info
+            },
+        },
+        methods: {
+            wear(info) {
+                debugger
+                var param = {
+                    rank: info
+                }
+                $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify(info),
+                    url: quark_title_wear_api + "?token=" + getCookie(),
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                        layer.msg("佩戴成功", {
+                            icon: 1,
+                            time: 1000 //2秒关闭
+                        }, function () {
+                            location.reload();
+                        });
+                    },
+                });
+            },
+            handleCurrentChange: function(val) {
+                this.currentPage = val;
+                console.log(`当前页: ${val}`);
+            }
+        }
+
+
+    })
+
+    /**
+     * 使用循环的方式判断一个元素是否存在于一个数组中
+     * @param {Object} arr 数组
+     * @param {Object} value 元素值
+     */
+    function isInArray(arr, value) {
+        for (var i = 0; i < arr.length; i++) {
+            if (value === arr[i].rankId) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+
+</body>
+</html>

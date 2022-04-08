@@ -9,6 +9,6 @@ import java.util.List;
 @Mapper
 public interface UserRankMapper {
     public void saveUserRank(UserRank userRank);
-    public List<UserRank> selectNowUserRankByUserId(Integer userId);
-    public List<UserRank> selectRankByUserId(Integer userId);
+    public UserRank selectNowUserRankByUserId(Integer userId);
+    public UserRank selectRankByUserId(Integer userId);
 }

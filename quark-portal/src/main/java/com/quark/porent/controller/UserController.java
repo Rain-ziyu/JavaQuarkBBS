@@ -45,5 +45,7 @@ public class UserController {
     public String message() { return "user/message"; }
     @RequestMapping("/collect")
     public String collect() { return "user/collect"; }
+    @RequestMapping("/rank")
+    public String title() { return "user/rank"; }
 
 }

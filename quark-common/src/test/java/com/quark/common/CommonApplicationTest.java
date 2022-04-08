@@ -58,7 +58,7 @@ private UserRankMapper userRankMapper;
 //        list.forEach(t->{
 //            System.out.println(t.getPosts().getTitle());
 //        });
-        List<UserRank> userRanks = userRankMapper.selectNowUserRankByUserId(1);
+       UserRank userRanks = userRankMapper.selectNowUserRankByUserId(1);
         log.info(String.valueOf(userRanks));
     }
 }

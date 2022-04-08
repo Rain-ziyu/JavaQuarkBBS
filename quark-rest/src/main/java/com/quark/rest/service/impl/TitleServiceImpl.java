@@ -1,5 +1,6 @@
 package com.quark.rest.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.quark.common.entity.Rank;
 import com.quark.common.mapper.RankMapper;
 import com.quark.rest.service.TitleService;
@@ -22,12 +23,12 @@ public class TitleServiceImpl implements TitleService {
     }
 
     @Override
-    public List<Rank> selectAllRank() {
-        return rankMapper.selectAllRank();
+    public Page<Rank> selectAllRank(Page<Rank> page) {
+        return rankMapper.selectAllRank(page);
     }
 
     @Override
-    public List<Rank> selectRankByRankId(Integer rankId) {
-        return rankMapper.selectRankByRankId(rankId);
+    public Page<Rank> selectRankByRankId(Page<Rank> page,Integer rankId) {
+        return rankMapper.selectRankByRankId(page,rankId);
     }
 }

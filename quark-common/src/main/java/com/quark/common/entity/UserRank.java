@@ -3,6 +3,7 @@ package com.quark.common.entity;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author User
@@ -11,6 +12,6 @@ import java.util.Date;
 @Data
 public class UserRank {
     private Integer userId;
-    private Rank userRank;
+    private List<Rank> userRank;
     private Date  getTime;
 }

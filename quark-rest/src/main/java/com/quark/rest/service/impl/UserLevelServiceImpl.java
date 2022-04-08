@@ -1,6 +1,7 @@
 package com.quark.rest.service.impl;
 
 import com.quark.common.entity.Rank;
+import com.quark.common.entity.User;
 import com.quark.common.entity.UserLevel;
 import com.quark.common.entity.UserRank;
 import com.quark.common.mapper.UserLevelMapper;
@@ -9,6 +10,7 @@ import com.quark.rest.service.UserRankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,9 @@ public class UserLevelServiceImpl implements UserLevelService {
         userLevel.setUserExp(0);
         userLevel.setUseingRank(rank);
         UserRank userRank = new UserRank();
-        userRank.setUserRank(rank);
+        ArrayList<Rank> ranks = new ArrayList<>();
+        ranks.add(rank);
+        userRank.setUserRank(ranks);
         userRank.setUserId(userId);
 //        这里使用特殊头衔赋予的方法来赋予默认头衔
         userRankService.insertSpecialUserRank(userRank);
@@ -81,5 +85,13 @@ public class UserLevelServiceImpl implements UserLevelService {
         userLevel.setUserExp(userLevelByUserId.getUserExp()+6);
         userLevelMapper.updateUserLevelByUserId(userLevel);
         userRankService.updateUserRank(userId);
+    }
+
+    @Override
+    public void wearRank(User user, Rank rank) {
+        UserLevel userLevel = new UserLevel();
+        userLevel.setUseingRank(rank);
+        userLevel.setUserId(user.getId());
+        userLevelMapper.updateUserLevelByUserId(userLevel);
     }
 }
