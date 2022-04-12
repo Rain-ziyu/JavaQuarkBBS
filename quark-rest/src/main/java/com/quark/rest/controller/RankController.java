@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @Author LHR
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rank")
 public class RankController extends BaseController {
+    private ReentrantLock reentrantLock = new ReentrantLock();
     @Autowired
     private RankService rankService;
 
@@ -44,8 +46,15 @@ public class RankController extends BaseController {
             if (hot != null) {
                 return QuarkResult.ok(hot);
             }
-            hot = rankService.findPostsRank();
-            redisService.cacheString(REDIS_RANK_POSTS, hot, 1);
+            //            此处使用reentrantLock来进行防止缓存击穿
+            if(reentrantLock.tryLock()) {
+                hot = rankService.findPostsRank();
+                redisService.cacheString(REDIS_RANK_POSTS, hot, 1);
+                reentrantLock.unlock();
+            }else {
+                Thread.sleep(100L);
+                return  getTotPosts();
+            }
             return QuarkResult.ok(hot);
         });
         return result;
@@ -57,8 +66,15 @@ public class RankController extends BaseController {
         QuarkResult result = restProcessor(() -> {
             List<Object> users = redisService.getString(REDIS_RANK_USERS);
             if (users != null) return QuarkResult.ok(users);
-            users = rankService.findUserRank();
-            redisService.cacheString(REDIS_RANK_USERS, users, 1);
+//            此处使用reentrantLock来进行防止缓存击穿
+            if(reentrantLock.tryLock()) {
+                users = rankService.findUserRank();
+                redisService.cacheString(REDIS_RANK_USERS, users, 1);
+                reentrantLock.unlock();
+            }else {
+                Thread.sleep(100L);
+                return  getNewUser();
+            }
             return QuarkResult.ok(users);
         });
         return result;

@@ -150,5 +150,15 @@ public class RedisService<T> {
         return   redisTemplate.boundListOps(key).size();
     }
 
+    /**
+     * 获取对应zset类型的的key下的某一元素的分数
+     * @param key
+     * @return
+     */
+    public Double getZset(String key,String item){
+        Double score = redisTemplate.boundZSetOps(key).score(item);
+        return   score;
+    }
+
 
 }

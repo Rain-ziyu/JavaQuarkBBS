@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quark.common.mapper.SearchKeyWordMapper">
+<resultMap id="baseResultMap" type="com.quark.common.entity.SearchKeyWord">
+    <result column="keyWord" jdbcType="VARCHAR" property="keyWord"></result>
+    <result column="sum" jdbcType="INTEGER" property="count"></result>
+</resultMap>
+    <insert id="saveWord">
+        insert into quark_keyWord
+        (keyWord, createTime)
+        values (#{key}, now())
+    </insert>
+<select id="selectCount" resultMap="baseResultMap">
+    select keyword, count(1) sum from quark_keyWord group by keyWord order by sum limit 0,12
+</select>
+</mapper>

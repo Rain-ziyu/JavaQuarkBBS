@@ -85,7 +85,6 @@ public class PostsController extends BaseController {
                 return QuarkResult.error("类型错误!");
             Page<Posts> page = postsService.getPostsByPage(type, search, pageNo - 1, length);
             return QuarkResult.ok(page.getContent(), page.getTotalElements(), page.getNumberOfElements());
-
         });
 
         return result;

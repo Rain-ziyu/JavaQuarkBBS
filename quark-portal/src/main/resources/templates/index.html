@@ -22,7 +22,7 @@
         </span>
                 <form action="/index" method="get" class="fly-search">
                     <i class="iconfont icon-sousuo"></i>
-                    <input class="layui-input" autocomplete="off" placeholder="搜索内容，回车跳转" type="text"
+                    <input class="layui-input" autocomplete="off" placeholder="搜索文章标题，回车跳转" type="text"
                            name="search">
                 </form>
                 <a th:href="@{/posts/add}" class="layui-btn jie-add">发布帖子</a>
@@ -77,6 +77,21 @@
                 <div id="users"></div>
             </dl>
         </div>
+        <div class="fly-panel leifeng-rank">
+            <h3 class="fly-panel-title">最近热词 - TOP 12</h3>
+            <dl>
+                <script id="word" type="text/html">
+                    {{# layui.each(d.data[0], function(index, item){ }}
+                    <dd style="height: 30px;" >
+                        <a href="index?search={{item.keyWord}}">
+                            <i class="layui-btn layui-btn-radius">{{item.keyWord}}</i>
+                        </a>
+                    </dd>
+                    {{# }); }}
+                </script>
+                <div id="words"></div>
+            </dl>
+        </div>
         <script id="hot" type="text/html">
         <dl class="fly-panel fly-list-one">
             <dt class="fly-panel-title">近一月热门帖子</dt>
@@ -108,16 +123,24 @@
             type: type,
             search: search
         }, function (data) {
-
             if (data.status == 500){
                 layer.msg(data.error, {icon: 5});
                 return;
+            }
+            debugger
+            if(data.data.length!=0&&search!=null&&search!=""){
+                //进行词频统计
+                $.ajax({
+                    url:quark_search_add_api+"?keyWord="+search,
+                    type:'PUT',
+                    success:function (data) {
+                    }
+                },"json");
             }
             var posts = $("#posts").html();
             laytpl(posts).render(data, function (html) {
                 $("#postss").html(html);
             });
-
             if (!renderpager) return;
 
             laypage.render({
@@ -153,6 +176,14 @@
             var tpl = $("#hot").html();
             laytpl(tpl).render(data,function (html) {
                 $("#hots").html(html);
+            });
+        });
+        //获取热门搜索词
+        $.get(quark_search_get_api,function (data) {
+            var tpl = $("#word").html();
+            laytpl(tpl).render(data,function (html) {
+                debugger
+                $("#words").html(html);
             });
         });
     });
