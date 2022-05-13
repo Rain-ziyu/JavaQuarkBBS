@@ -134,7 +134,7 @@
                     "sClass": "text-center",
                     "data": "id",
                     "render": function (data, type, full, meta) {
-                        return '<input type="checkbox"  class="checkchild"  value="' + data + '" />';
+                        return '<input type="checkbox"  class="checkchild"  value="'+data+'" />';
                     },
                     "bSortable": false
                 },
@@ -226,6 +226,31 @@
     
     function updateLabel() {
         var id = $(".checkchild:checked").val();
+        $('#datatable').find("tr").each(function (){
+            var i=0,j=0,x=0;
+            var children = $(this).children();
+            $(this).children().each(function (){
+                if(i==1){
+                    var text=$(this).text();
+                    if (id==text){
+                        j++;
+                        x++;
+                    }
+                }if (i==2){
+                    if (j==1){
+                        var text1=$(this).text();
+                        $("#name").val(text1);
+                    }
+                }if (i==3){
+                    if (x==1){
+                        var text2=$(this).text();
+                        $("#details").val(text2);
+                    }
+                }
+                i++;
+            });
+        })
+
         if ($(".checkchild:checked").length < 1)
         {
             layer.msg('请选择一条数据');

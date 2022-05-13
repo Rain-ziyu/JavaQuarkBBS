@@ -112,9 +112,6 @@ public class PostsController extends BaseController {
             QueryWrapper<MyReply> wrapper=new QueryWrapper<MyReply>();
             //Page<Reply> page = replyService.getReplyByPage(postsid, pageNo - 1, length);
             IPage<MyReply> myReplyIPage =replyService.listMyReply(page,wrapper,postsid);
-            for (MyReply record : myReplyIPage.getRecords()) {
-                System.out.println(record.toString());
-            }
             map.put("replys", myReplyIPage.getRecords());
             //return QuarkResult.ok(map, page.getTotalElements(), page.getNumberOfElements());
             return QuarkResult.ok(map, page.getTotal(), (int)page.getPages());

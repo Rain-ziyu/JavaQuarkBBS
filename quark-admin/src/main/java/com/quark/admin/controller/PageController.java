@@ -62,7 +62,6 @@ public class PageController {
 
     @RequestMapping(value="/" ,method = RequestMethod.GET)
     public String login1(){
-        System.out.println("-------------------");
         return "login";
     }
     @RequestMapping("/initPage")
@@ -103,5 +102,10 @@ public class PageController {
     @RequestMapping("/labelsPage")
     public String LabelsPage(){
         return "label/labels";
+    }
+
+    @RequestMapping("/advertisementPage")
+    public String Page(){
+        return "advertisement/advertisements";
     }
 }
