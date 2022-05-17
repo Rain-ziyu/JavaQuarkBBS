@@ -60,7 +60,7 @@ public class RankController extends BaseController {
         return result;
     }
 
-    @ApiOperation("获取一个月内新注册的用户")
+    @ApiOperation("获取一个月内新活跃的用户")
     @GetMapping("/newUsers")
     public QuarkResult getNewUser() {
         QuarkResult result = restProcessor(() -> {

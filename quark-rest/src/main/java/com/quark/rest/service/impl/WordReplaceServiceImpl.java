@@ -61,12 +61,15 @@ public class WordReplaceServiceImpl {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 try {
-                    BufferedReader br = new BufferedReader(new FileReader(file.toFile()));// 构造一个BufferedReader类来读取文件
+//                    注意这里一定要关闭fileReader的io流
+                    FileReader fileReader = new FileReader(file.toFile());
+                    BufferedReader br = new BufferedReader(fileReader);// 构造一个BufferedReader类来读取文件
                     String s = null;
                     while ((s = br.readLine()) != null) {// 使用readLine方法，一次读一行
                         keyArray.add(s);
                     }
                     br.close();
+                    fileReader.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -80,7 +83,6 @@ public class WordReplaceServiceImpl {
                 return super.postVisitDirectory(dir, exc);
             }
         });
-
 
         return keyArray;
     }

@@ -18,8 +18,8 @@
 <div th:include="common/header::header"></div>
 <div class="main fly-user-main layui-clear" id="app">
     <ul th:include="common/set::set" class="layui-nav layui-nav-tree layui-inline" lay-filter="user"></ul>
-    <el-row style="left: 110px">
-        <el-col :span="8" v-for="(o, index) in showInfo" :key="o" :offset="index %2== 0 ? 2 : 0">
+    <el-row style="left: 200px">
+        <el-col :span="6" v-for="(o, index) in showInfo" :key="o"  >
             <el-card :body-style="{ padding: '0px' }">
                 <img :src="'http://yzzy.top/images/upload/webp/'+o.rankUrl" class="image"
                      :class="o.show==null?'':'gray'">
@@ -27,7 +27,7 @@
                     <span>{{o.rankName}}</span>
                     <div class="bottom clearfix">
                         <time class="description">{{ o.description }}</time>
-                        <el-button type="text" class="button" @click="wear(o)" v-if="o.show==null">佩戴</el-button>
+                        <el-button type="text" class="button" @click="wear(o)" style="line-height: 0;" v-if="o.show==null">佩戴</el-button>
                     </div>
                 </div>
             </el-card>
@@ -52,11 +52,15 @@
         font-size: 13px;
         color: #999;
     }
-
+    .el-col-6{
+        width:33%;
+    }
+    /*.el-col-offset-2 {*/
+    /*     margin-left: 0;*/
+    /*}*/
     .gray {
         -webkit-filter: grayscale(100%);
         -moz-filter: grayscale(100%);
-
         -o-filter: grayscale(100%);
         filter: grayscale(100%);
 

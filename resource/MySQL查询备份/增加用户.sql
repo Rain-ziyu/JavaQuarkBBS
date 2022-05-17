@@ -1,0 +1,1 @@
+insert into quark_user (email, enable, icon, init_time, password, sex, signature, username, id) values ('18743@qq.com', '0', 'hm', '2022-03-31 10:54:54', '46545', '0', '', 'lo', '500')

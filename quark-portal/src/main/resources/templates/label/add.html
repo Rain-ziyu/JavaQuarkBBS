@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>增添标签</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <!-- import Vue before Element -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div th:include="common/header::header"></div>
+<div id="app">
+
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            pickerOptions: {
+                shortcuts: [{
+                    text: '最近一周',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近一个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近三个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }]
+            },
+            form: {
+                name: '',
+                advLocation: '',
+                dailyStartTime: '',
+                dailyEndTime: '',
+                label: [],
+                resource: '',
+                desc: '',
+                telephone: '',
+                value2: '',
+                webPageUrl: '',
+                imgUrl: '',
+                fileList:[],
+                allLabel:[]
+            }
+        },
+        created() {
+            let that = this;
+            $.get(quark_label_getall_api, function (data) {
+                debugger
+                if (data.status === 200) {
+                    that.form.allLabel=data.data
+                } else {
+                    layer.msg(data.error, {icon: 5});
+                }
+            });
+        }
+        ,
+        methods: {
+            upload(file, imgUrl){
+                let that = this
+                console.log(imgUrl)
+                let fd = new FormData();
+                fd.append("file", file.file);
+                $.ajax({
+                    type: 'POST',
+                    url: quark_upload_api,
+                    processData: false, // 告诉jQuery不要去处理发送的数据
+                    contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+                    dataType: 'json',
+                    data : fd,
+                    async: false,
+                    success: function (data) {
+                        app.form.imgUrl = data.data.src;
+                        console.log(that.form.imgUrl)
+                        debugger
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    }
+                })
+
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${file.name}？`);
+            },
+            onSubmit() {
+                let data = {
+                    adv: {
+                        name: this.form.name,
+                        imgUrl: this.form.imgUrl,
+                        webPageUrl: this.form.webPageUrl,
+                        info: this.form.info,
+                        telephone: this.form.telephone,
+                        label: {
+                            id:this.form.label[0]
+                        },
+                        startDate: this.form.value2[0],
+                        endDate: this.form.value2[1],
+                        dailyStartTime: this.form.dailyStartTime,
+                        dailyEndTime: this.form.dailyEndTime,
+                        advLocation: this.form.advLocation,
+                    },
+                    token: getCookie()
+                }
+                let that = this
+                $.ajax({
+                    type: 'PUT',
+                    url: quark_adv_add_api,
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    async: false,
+                    success: function (data) {
+                        debugger
+                        that.$alert('你将会回退到上一个标签页', '申请成功', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                                that.$message({
+                                    type: 'info',
+                                    message: `action: ${ action }`
+                                });
+                                //发送成功后浏览器回退至上一标签页
+                                history.go(-1)
+                            }
+
+                        });
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    }
+                })
+
+            }
+        }
+
+    })
+</script>
+<div th:include="common/footer::footer"></div>
+</body>
+</html>
