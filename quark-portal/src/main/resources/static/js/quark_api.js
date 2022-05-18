@@ -36,6 +36,7 @@ var quark_title_getByUser_api = "http://"+hosts+"/title";
 var quark_title_wear_api = "http://"+hosts+"/title";
 var quark_search_add_api="http://"+hosts+"/search";
 var quark_search_get_api="http://"+hosts+"/search";
+var quark_label_add_api="http://"+hosts+"/label";
 var quark_chat_webSocket_api = "ws://124.222.44.157:8083/websocket";
 
 function setCookie(data) {

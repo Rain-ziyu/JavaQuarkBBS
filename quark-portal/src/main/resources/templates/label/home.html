@@ -29,6 +29,9 @@
                 </ul>
 
             </div>
+            <button onclick = "addLabel()" class="layui-btn layui-btn-warm" >
+               新建专属标签
+            </button>
 
         </div>
     </div>
@@ -41,6 +44,49 @@
    function tolabelDetaiail(data) {
        location.href = "/label/detail?id="+data;
    }
+   function addLabel(data) {
+       layer.open({
+           type: 1,
+           title:'新增标签',
+           content: ' <div class="layui-form-item">\n' +
+               '    <div class="layui-inline">\n' +
+               '      <label class="layui-form-label">标签名称</label>\n' +
+               '      <div class="layui-input-inline">\n' +
+               '        <input type="text" id="lableName" autocomplete="off" class="layui-input">\n' +
+               '      </div>\n' +
+               '    </div>\n' +
+               '    <div class="layui-inline">\n' +
+               '      <label class="layui-form-label">标签描述</label>\n' +
+               '      <div class="layui-input-inline">\n' +
+               '        <input type="text" id="lableDetail" autocomplete="off" class="layui-input">\n' +
+               '      </div>\n' +
+               '    </div>\n' +
+               '  </div>\'\n',
+           btn: ['确定', '取消']
+           ,yes: function(index, layero){
+               var param = {
+                   name:$('#lableName').val(),
+                   details:$('#lableDetail').val(),
+               }
+               $.ajax({
+                   type: 'PUT',
+                   url: quark_label_add_api,
+                   dataType: 'json',
+                   data : JSON.stringify(param),
+                   contentType:'application/json',
+                   success: function (data) {
+                        debugger;
+                        
+                   },
+                   error: function (XMLHttpRequest, textStatus, errorThrown) {
+                   }
+               })
+               layer.close(index);
+           }
+
+       });
+   }
+
 
     layui.use(['laytpl'], function () {
         var laytpl = layui.laytpl;

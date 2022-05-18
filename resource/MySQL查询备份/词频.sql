@@ -1,0 +1,1 @@
+  select count(1) sum from quark_keyWord group by keyWord order by sum
