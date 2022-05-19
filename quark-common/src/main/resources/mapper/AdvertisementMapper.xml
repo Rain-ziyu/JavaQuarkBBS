@@ -37,6 +37,14 @@
             advLocation=#{advLocation}
         where id = #{id}
     </update>
+    <update id="changeEnable">
+        update quark_advertisement q
+        set q.status=#{status}
+        where id=#{id}
+    </update>
+    <delete id="delbyId">
+        delete from quark_advertisement where id=#{id}
+    </delete>
     <select id="getAdvList" resultMap="BaseResultMap">
         select imgUrl,
                webPageUrl,
@@ -121,6 +129,24 @@
                 and a.telephone = #{telephone}
             </if>
         </where>
+    </select>
+    <select id="findByid" resultType="com.quark.common.entity.Advertisement">
+        select imgUrl,
+               webPageUrl,
+               info,
+               telephone,
+               label,
+               endDate,
+               status,
+               advLocation,
+               userId,
+               label,
+               startDate,
+               dailyStartTime,
+               dailyEndTime,
+               name
+        from quark_advertisement
+        where id = #{id}
     </select>
 
 

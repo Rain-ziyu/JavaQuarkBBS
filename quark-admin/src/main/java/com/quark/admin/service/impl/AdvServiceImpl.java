@@ -24,4 +24,26 @@ public class AdvServiceImpl implements AdvService {
         IPage<Advertisement> advpage = advertisementMapper.findBypage(id,name,status,telephone,page);
         return advpage;
     }
+    @Override
+    @Transactional
+    public void delbyId(String[] id) {
+        for (String s : id) {
+            advertisementMapper.delbyId(s);
+        }
+    }
+
+    @Override
+    public void changeEnable(String[] id) {
+        for (String s : id) {
+           Advertisement adv=  advertisementMapper.findByid(s);
+           Integer status = adv.getStatus();
+           if (status==1){
+               status=0;
+               advertisementMapper.changeEnable(s,status);
+           }else{
+               status=1;
+               advertisementMapper.changeEnable(s,status);
+           }
+        }
+    }
 }
