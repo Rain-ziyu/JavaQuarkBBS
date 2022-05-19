@@ -49,6 +49,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<TextWebSocketFra
             }else {
                 //广播消息 会推送给所有在线的用户
                 manager.broadMessage(QuarkChatProtocol.buildMessageCode(chatUser.getUser(), clientProto.getMsg()));
+
             }
         }
     }

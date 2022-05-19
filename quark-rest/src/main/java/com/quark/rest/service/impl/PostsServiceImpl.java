@@ -10,10 +10,7 @@ import com.quark.common.entity.User;
 import com.quark.common.exception.ServiceProcessException;
 import com.quark.rest.service.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +73,8 @@ public class PostsServiceImpl extends BaseServiceImpl<PostsDao, Posts> implement
                 Path<Boolean> $good = root.get("good");
                 Path<String> $title = root.get("title");
                 ArrayList<Predicate> list = new ArrayList<>();
-                if (type != null && type.equals("good")) list.add(criteriaBuilder.equal($good, true));
+                if (type != null && type.equals("good")) {
+                    list.add(criteriaBuilder.equal($good, true));}
                 if (type != null && type.equals("top")) list.add(criteriaBuilder.equal($top, true));
                 if (search != null && search != "") list.add(criteriaBuilder.like($title, "%" + search + "%"));
 
@@ -84,8 +82,13 @@ public class PostsServiceImpl extends BaseServiceImpl<PostsDao, Posts> implement
                 return predicate;
             }
         };
-        Page<Posts> page = repository.findAll(specification, pageable);
 
+        Page<Posts> page = repository.findAll(specification, pageable);
+        if (type != null && type.equals("good")) {
+            List<Posts> good = repository.findGood();
+            good.addAll((List<Posts>) repository.findAll(specification));
+            page = new PageImpl<>(good,pageable,pageNo);
+        }
         return page;
     }
 

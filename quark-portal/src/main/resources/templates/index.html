@@ -25,7 +25,7 @@
                     <input class="layui-input" autocomplete="off" placeholder="搜索文章标题，回车跳转" type="text"
                            name="search">
                 </form>
-                <a th:href="@{/posts/add}" class="layui-btn jie-add">发布帖子</a>
+                <a th:href="@{/posts/add}" class="layui-btn jie-add" style="background-color: #1e9fff;">发布帖子</a>
             </div>
 
             <ul class="fly-list">
@@ -82,9 +82,10 @@
             <dl>
                 <script id="word" type="text/html">
                     {{# layui.each(d.data[0], function(index, item){ }}
-                    <dd style="height: 30px;" >
+                    <dd style="height: 30px; max-width: 70px;
+    min-width: 30px;" >
                         <a href="index?search={{item.keyWord}}">
-                            <i class="layui-btn layui-btn-radius">{{item.keyWord}}</i>
+                            <i class="layui-btn layui-btn-radius" style="background-color: #1e9fff; ">{{item.keyWord}}</i>
                         </a>
                     </dd>
                     {{# }); }}
@@ -116,7 +117,7 @@
     <!--根据url param 翻页获取信息-->
     function loadPosts(laytpl, laypage, pageNo, renderpager) {
         var type = $.getUrlParam('type');
-        var search =$.getUrlParam('search');
+        var search =getUrlParam('search');
         $.get(quark_posts_get_api, {
             pageNo: pageNo,
             length: 15,
@@ -188,7 +189,16 @@
         });
     });
 
-
+    function getUrlParam(name){
+        // 用该属性获取页面 URL 地址从问号 (?) 开始的 URL（查询部分）
+        var url = window.location.search;
+        // 正则筛选地址栏
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        // 匹配目标参数
+        var result = url.substr(1).match(reg);
+        //返回参数值
+        return result ? decodeURIComponent(result[2]) : null;
+    }
 </script>
 
 </body>

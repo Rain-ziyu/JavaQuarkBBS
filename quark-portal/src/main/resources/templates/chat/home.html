@@ -192,6 +192,20 @@
         $('#message_box').scrollTop($("#message_box")[0].scrollHeight + 20);
         $('.sub_but').click(function (event) {
             var text = $("#message").val();
+            $.ajax({
+                type: 'GET',
+                url: quark_KeyWordReplace_api+text,
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    if (data.status == 200) {
+                        text = data.data;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                }
+            });
             var msg = buildMessage(messagetype,null,text);
             sendMessage(msg);
         });

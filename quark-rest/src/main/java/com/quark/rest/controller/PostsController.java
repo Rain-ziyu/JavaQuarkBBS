@@ -6,6 +6,7 @@ import com.quark.common.base.BaseController;
 import com.quark.common.dto.QuarkResult;
 import com.quark.common.entity.*;
 import com.quark.rest.service.*;
+import com.quark.rest.service.impl.WordReplaceServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,7 +26,8 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/posts")
 public class PostsController extends BaseController {
-
+    @Autowired
+    private WordReplaceServiceImpl wordReplaceService;
     @Autowired
     private UserService userService;
 
@@ -45,7 +47,8 @@ public class PostsController extends BaseController {
             @ApiImplicitParam(name = "content", value = "帖子内容", dataType = "String"),
             @ApiImplicitParam(name = "title", value = "帖子标题", dataType = "String"),
             @ApiImplicitParam(name = "token", value = "用户令牌", dataType = "String"),
-            @ApiImplicitParam(name = "labelId", value = "标签ID", dataType = "Integer")
+            @ApiImplicitParam(name = "labelId", value = "标签ID", dataType = "Integer"),
+            @ApiImplicitParam(name = "top", value = "是否顶置", dataType = "boolean")
     })
     @PostMapping
     public QuarkResult CreatePosts(Posts posts, String token, Integer labelId) {
@@ -58,7 +61,8 @@ public class PostsController extends BaseController {
 
             User user = userService.findOne(userbytoken.getId());
             if (user.getEnable() != 1) return QuarkResult.warn("用户处于封禁状态！");
-
+            posts.setTitle(wordReplaceService.illegalWordsReplace(posts.getTitle()));
+            posts.setContent(wordReplaceService.illegalWordsReplace(posts.getContent()));
             postsService.savePosts(posts, labelId, user);
 //            用户发帖时经验的获取
             userLevelService.userSendPosts(user.getId());

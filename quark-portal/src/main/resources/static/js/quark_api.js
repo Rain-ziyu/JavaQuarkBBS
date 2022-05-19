@@ -1,7 +1,8 @@
 /*链接*/
-var hosts = "localhost:8081";
+var hosts = "yzzy.top:8081";
 var quark_login_api = "http://"+hosts+"/user/login";
 var quark_getUser_api = "http://"+hosts+"/user/message/";
+var quark_KeyWordReplace_api = "http://"+hosts+"/replace";
 var quark_logout_api = "http://"+hosts+"/user/logout";
 var quark_register_api = "http://"+hosts+"/user";
 var quark_upload_api = "http://"+hosts+"/upload/image";

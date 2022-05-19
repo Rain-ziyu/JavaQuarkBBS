@@ -47,6 +47,7 @@
                 </div>
                 <div class="layui-form-item">
                     <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                    是否顶置：<input type="checkbox" id="top" lay-skin="switch" lay-text="开启|关闭">
                 </div>
             </form>
         </div>
@@ -100,6 +101,7 @@
                     title: data.field.title,
                     content: layedit.getContent(content),
                     labelId: data.field.labelId,
+                    top:  $("#top ").is(':checked') ,
                     token: getCookie()
                 },
                 function (data) {
