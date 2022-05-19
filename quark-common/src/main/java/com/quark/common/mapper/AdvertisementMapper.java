@@ -29,4 +29,11 @@ public interface AdvertisementMapper {
                                     @Param("status") Integer status,
                                     @Param("telephone") String telephone,
                                     Page<Advertisement> page);
+
+    void delbyId(String id);
+
+    Advertisement findByid(String id);
+
+    void changeEnable(@Param("id") String s,
+                      @Param("status") Integer status);
 }

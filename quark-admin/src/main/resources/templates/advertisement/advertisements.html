@@ -32,8 +32,8 @@
                             <input type="text" class="form-control" id="name-search" placeholder="名称"/>
                         </div>
                         <div class="form-group">
-                            <label >用户:</label>
-                            <input type="text" class="form-control" id="email-search" placeholder="用户名称"/>
+                            <label >联系电话:</label>
+                            <input type="text" class="form-control" id="email-search" placeholder="联系电话"/>
                         </div>
                         <div class="form-group">
                             <label class="control-label">状态:</label>
@@ -44,7 +44,8 @@
                             </select>
                         </div>
                         <button type="button"  onclick="search();" class="btn btn-primary">查询</button>
-                        <button shiro:hasPermission="/users/saveUserEnable" type="button" onclick="changeEnable();" class="btn btn-primary" style="float: right; margin-right: 1px;">启用/禁用</button>
+                        <button type="button" shiro:hasPermission="/advertisements/delete" onclick="delbyid();" class="btn btn-primary" style="float: right; margin-right: 1px;">删除</button>
+                        <button shiro:hasPermission="/advertisements/changeEnable" type="button" onclick="changeadvEnable();" class="btn btn-primary" style="float: right; margin-right: 1px;">启用/禁用</button>
                     </form>
 
                     <div class="widget-content nopadding">
@@ -58,7 +59,9 @@
                                 <th>广告名称</th>
                                 <th>链接地址</th>
                                 <th>广告地址</th>
+                                <th>联系电话</th>
                                 <th>用户id</th>
+                                <th>状态</th>
                             </tr>
                             </thead>
                         </table>
@@ -122,24 +125,26 @@
                 { "data": "name" },
                 { "data": "webPageUrl" },
                 { "data": "advLocation" },
+                { "data": "telephone" },
                 { "data": "userId" },
+                { "data": "status" },
             ],
             columnDefs:[
                 { "orderable": false, "targets": 1 },
                 { "orderable": false, "targets": 2 },
                 { "orderable": false, "targets": 3 },
                 { "orderable": false, "targets": 4 },
-                // {
-                //     "orderable": false,
-                //     "render": function(data, type, row) {
-                //         if(data==1){
-                //             return "正常";
-                //         }else{
-                //             return "封禁";
-                //         }
-                //     },
-                //     "targets": 5
-                // },
+                {
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        if(data==1){
+                            return "启用";
+                        }else{
+                            return "禁用";
+                        }
+                    },
+                    "targets": 7
+                },
             ],
 
         } );
@@ -162,7 +167,70 @@
         param.draw = data.draw;
         return param;
     }
+    function delbyid() {
+        var id = [];
+        $(".checkchild:checked").each(function(){
+            id.push($(this).val());
+        });
+        if ($(".checkchild:checked").length < 1) {
+            layer.msg('请选择一条数据');
+            return;
+        }
+        var parm = {"id":id};
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确认', '取消'] //按钮
+        }, function () {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: 'advertisements/delete',
+                data: parm,
+                dataType:'json',
+                async: false,
+                success: function (data) {
+                    if (data.status == 200) {
+                        layer.msg('删除成功');
+                        table.ajax.reload();
+                    } else {
+                        layer.msg(data.error);
+                    }
+                }
+            });
+        });
+    }
 
+    function changeadvEnable() {
+        var id = [];
+        $(".checkchild:checked").each(function(){
+            id.push($(this).val());
+        });
+        if ($(".checkchild:checked").length < 1) {
+            layer.msg('请选择一条数据');
+            return;
+        }
+        var parm = {"id":id};
+        layer.confirm('您确定修改吗？', {
+            btn: ['确认', '取消'] //按钮
+        }, function () {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: 'advertisements/changeEnable',
+                data: parm,
+                dataType:'json',
+                async: false,
+                success: function (data) {
+                    if (data.status == 200) {
+                        layer.msg('修改成功');
+                        table.ajax.reload();
+                    } else {
+                        layer.msg(data.error);
+                    }
+                }
+            });
+        });
+
+    }
 
 
 

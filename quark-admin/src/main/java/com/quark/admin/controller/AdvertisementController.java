@@ -7,17 +7,12 @@ import com.quark.admin.service.AdvService;
 import com.quark.common.base.BaseController;
 import com.quark.common.dto.PageResult;
 import com.quark.common.dto.QuarkResult;
-import com.quark.common.entity.Advertisement;
-import com.quark.common.entity.MyReply;
-import com.quark.common.entity.Reply;
-import com.quark.common.entity.User;
+import com.quark.common.entity.*;
 import com.quark.common.mapper.AdvertisementMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 /**
  *
@@ -45,5 +40,23 @@ public class AdvertisementController extends BaseController {
                 IPage.getRecords());
         return result;
     }
+    @PostMapping("/delete")
+    public QuarkResult deleteAdmin(@RequestParam(value = "id[]") String[] id) {
 
+        QuarkResult result = restProcessor(() -> {
+            advService.delbyId(id);
+            //advService
+            return QuarkResult.ok();
+        });
+        return result;
+    }
+    @PostMapping("/changeEnable")
+    public QuarkResult changeEnable(@RequestParam(value = "id[]") String[] id) {
+        QuarkResult result = restProcessor(() -> {
+            advService.changeEnable(id);
+            //advService
+            return QuarkResult.ok();
+        });
+        return result;
+    }
 }
